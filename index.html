@@ -1,0 +1,1660 @@
+﻿<!DOCTYPE html>
+<html class="light h-full" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport" />
+    <title>MySub - Subscription Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=Noto+Sans+KR:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "rgb(var(--color-primary) / <alpha-value>)", // Used in login
+                        "primary-green": "rgb(var(--color-primary-green) / <alpha-value>)", // Used in dashboard/heatmap
+                        "primary-dark": "rgb(var(--color-primary-dark) / <alpha-value>)",
+                        "background-light": "#f6f8f6", // Login bg
+                        "background-off": "#f3f4f6",   // Dashboard bg
+                        "background-heat": "#f8fcf9",  // Heatmap bg
+                        "background-dark": "#102216",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a3322",
+                        "text-main": "#0d1b12",
+                        "text-main-light": "#0d1b12",
+                        "text-main-dark": "#ffffff",
+                        "text-secondary": "#5a6b5d",
+                        "text-sub-light": "rgb(var(--color-primary) / 0.8)",
+                        "text-sub-dark": "rgb(var(--color-primary) / 0.8)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans", "sans-serif"],
+                        "sans": ["Manrope", "Noto Sans KR", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 8px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.06)',
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-background-off dark:bg-background-dark font-display text-text-main transition-colors duration-200 overflow-hidden h-full w-full fixed inset-0 overscroll-none">
+
+    <!-- App Container (Root) -->
+    <div class="relative w-full h-full min-h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+
+        <!-- VIEW: Login (Unified for Mobile/Desktop, Centered) -->
+        <div id="view-login" class="w-full h-full absolute inset-0 z-50 overflow-y-auto per-scrollbar">
+            <div
+                class="w-full h-full bg-background-light dark:bg-background-dark flex flex-col">
+
+                <div class="flex items-center p-4 pb-2 justify-end pt-6">
+                    <div class="text-right">
+                        <button aria-label="Help"
+                            class="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <span class="material-symbols-outlined">help</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col justify-center px-6 pb-4">
+                    <!-- MySub APP Logo -->
+                    <div class="flex justify-center mb-2 relative">
+                        <div id="login-blur-bg"
+                            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gray-500/20 rounded-full blur-3xl dark:bg-gray-400/10 transition-colors duration-500">
+                        </div>
+                        <img src="MySub.svg" alt="MySub App Logo"
+                            class="relative w-28 h-28 drop-shadow-xl hover:scale-105 transition-transform duration-300">
+                    </div>
+
+                    <div class="text-center space-y-2 mb-6">
+                        <h1
+                            class="text-2xl font-extrabold leading-tight tracking-tight text-text-main dark:text-text-main-dark">
+                            Securely Link Account
+                        </h1>
+                        <p
+                            class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed max-w-[280px] mx-auto">
+                            Connect your bank account to track subscriptions and identify potential savings instantly.
+                        </p>
+                    </div>
+
+                    <!-- Selected Bank Logo Placeholder -->
+                    <div id="bank-logo-display" class="flex justify-center items-center h-12 py-1 mb-6 text-gray-400 dark:text-gray-600">
+                        <!-- Default Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark"><path d="M10 18v-7"/><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>
+                    </div>
+
+                    <div class="space-y-5 w-full max-w-[450px] mx-auto px-2">
+                        <!-- Bank Selection -->
+                        <div class="relative group">
+                            <label for="bank-select" class="sr-only">Select your bank</label>
+                            <select id="bank-select"
+                                class="w-full h-14 pl-4 pr-12 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-200 dark:border-gray-700 text-gray-500 appearance-none focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 text-lg font-medium transition-all cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 shadow-sm"
+                                style="-webkit-appearance: none; -moz-appearance: none; text-indent: 1px; text-overflow: '';">
+                                <option value="" disabled selected>Select Your Bank</option>
+                                <option value="bmo">BMO</option>
+                                <option value="cibc">CIBC</option>
+                                <option value="rbc">RBC</option>
+                                <option value="scotia">Scotiabank</option>
+                                <option value="td">TD Canada Trust</option>
+                            </select>
+                            <div
+                                class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors bg-surface-light dark:bg-black p-1">
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-login-bank" disabled
+                            class="group relative w-full flex items-center justify-center h-14 bg-gray-200 dark:bg-white/5 text-gray-400 dark:text-gray-500 rounded-xl font-bold text-lg shadow-none transition-all duration-300 overflow-hidden cursor-not-allowed">
+                            <div id="btn-login-effect"
+                                class="absolute inset-0 bg-white/10 translate-y-full transition-transform duration-300">
+                            </div>
+                            <div class="relative flex items-center gap-3">
+                                <span>Log in with Bank ID</span>
+                            </div>
+                        </button>
+                        <div class="flex items-center justify-center gap-2 py-2">
+                            <span id="security-icon"
+                                class="material-symbols-outlined text-gray-400 text-lg transition-colors duration-300">verified_user</span>
+                            <p id="security-text" class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                Bank-grade 256-bit encryption
+                            </p>
+                        </div>
+                        <div class="relative flex py-2 items-center">
+                            <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                            <span
+                                class="flex-shrink-0 mx-4 text-gray-400 dark:text-gray-600 text-xs font-semibold">OR</span>
+                            <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                        </div>
+                        <button id="btn-login-email"
+                            class="w-full flex items-center justify-center h-12 bg-transparent border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl font-semibold text-base transition-colors duration-200">
+                            Continue with Email
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 text-center">
+                    <p class="text-xs text-gray-400 dark:text-gray-600 leading-normal max-w-xs mx-auto">
+                        By continuing, you agree to our <a class="underline hover:text-primary transition-colors"
+                            href="#">Terms of Service</a> and <a class="underline hover:text-primary transition-colors"
+                            href="#">Privacy Policy</a>.
+                    </p>
+                </div>
+                <div class="fixed inset-0 pointer-events-none opacity-[0.02] dark:opacity-[0.05] z-[-1]"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwp07vZHoRaKlPQ8U2gZRNYp1l5scW3eY7Cfjp3Ty9e_YkVTmfEsehmXOohw1bU7DX2HU5hxodYnJ2iZQoN_1OvfBVQy3Nl__ETqbkLUJJbGResgVH25Z0wBBdnifsFNEENPMgC90jr5nDqRjD6cDsE4Rr8bRDCI_MZTc8j5Hh9ahv69mHaRTENBEoKRt_0Xh3wFSjlNSLGcr7PvXpFLWrk8w7IOa3QGGl63Jxg6Q6uWreRMTzgmB1gfpVJnFRs5Nu5XC3ouzhgS9g');">
+                </div>
+            </div> <!-- End Inner Wrapper -->
+        </div> <!-- End View Login -->
+
+        <!-- MAIN APP CONTENT (Hidden in Login) -->
+        <div id="main-app" class="hidden w-full h-full relative z-0">
+
+            <!-- MOBILE LAYOUT (< md) -->
+            <div id="mobile-layout"
+                class="md:hidden w-full h-full bg-background-off dark:bg-background-dark flex flex-col relative mx-auto border-x border-gray-200 dark:border-gray-800 shadow-2xl">
+                <!-- VIEW: Dashboard (Mobile) -->
+                <div id="view-dashboard"
+                    class="flex-1 flex flex-col overflow-y-auto no-scrollbar pb-32 bg-background-off dark:bg-background-dark">
+                    <!-- Dashboard Header -->
+                    <header
+                        class="sticky top-0 z-20 bg-surface-light/95 dark:bg-background-dark/95 backdrop-blur-md px-6 pt-12 pb-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-gray-100 dark:border-gray-800"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD61bMB5WRouAwgj9Fb__3Laq20H9TuOdmL6IHp9sFkNQ0Qf4mkPoDqrCrJGwXaEtrnmUy_RH71De1v2VyYqUzUSHIlUhSgDPC4scrZouAwrDyaX5G09Otr-Ylzg4kcQIZCdDJMAIvWF_l-MbOyAYBBEdUtqS32yjfT0Lj3gqZwTQrnb8RfZJX9z0LIf_uNcVuTMU2pCoFj1GK5VG1pgrdIl3qPfxKZeJ5T6Bpq0eGpQ-hAG4yUpIMaR4rxoQVYaF8qYYE1ph3Nqvgp");'>
+                                </div>
+                                <div
+                                    class="absolute bottom-0 right-0 size-3 bg-primary-green rounded-full border-2 border-white dark:border-background-dark">
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-text-secondary font-medium">Welcome back 👋</p>
+                                <h2 class="text-text-main dark:text-white text-lg font-bold leading-tight">John Doe
+                                </h2>
+                            </div>
+                        </div>
+                        <button
+                            class="relative flex size-10 items-center justify-center rounded-full bg-gray-50 dark:bg-white/5 text-text-main dark:text-white hover:bg-gray-100 transition-colors">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <span
+                                class="absolute top-2.5 right-2.5 size-2 bg-red-500 rounded-full border border-white dark:border-background-dark"></span>
+                        </button>
+                    </header>
+
+                    <!-- Dashboard Content -->
+                    <div class="px-6 mt-4 mb-2 flex justify-end">
+                        <div id="bank-linked-badge"
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-xs font-medium text-text-secondary">
+                            <span class="material-symbols-outlined text-[14px] text-primary-green filled">lock</span>
+                            <span id="bank-linked-text">No Bank Account Linked</span>
+                        </div>
+                    </div>
+                    <div class="px-6 mb-8">
+                        <div
+                            class="relative overflow-hidden rounded-2xl bg-gray-900 dark:bg-gray-800 text-white shadow-lg p-6 group cursor-pointer transition-transform active:scale-[0.98]">
+                            <div
+                                class="absolute top-0 right-0 w-64 h-64 bg-primary-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none">
+                            </div>
+                            <div class="relative z-10 flex flex-col gap-6">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span
+                                                class="material-symbols-outlined text-primary-green text-xl filled">savings</span>
+                                            <p class="text-gray-300 text-sm font-medium">Estimated Monthly Savings</p>
+                                        </div>
+                                        <h3 class="text-3xl font-bold tracking-tight text-primary-green">C$ 32.00</h3>
+                                    </div>
+                                    <div
+                                        class="bg-white/10 backdrop-blur-sm rounded-lg p-2 hover:bg-white/20 transition-colors">
+                                        <span class="material-symbols-outlined text-white">arrow_forward</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 bg-white/10 rounded-xl p-3 backdrop-blur-md border border-white/5">
+                                    <div class="bg-red-500/20 p-2 rounded-lg shrink-0 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-red-400 text-sm">warning</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Unused Subscription Detected</p>
+                                        <p class="text-xs text-gray-400">3 services are rarely used.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-text-main dark:text-white">Monthly Spending Trend</h3>
+                            <button class="text-xs font-semibold text-primary-green hover:text-primary-dark">View
+                                All</button>
+                        </div>
+                        <div
+                            class="h-32 w-full rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5 p-4 flex items-end justify-between gap-2 shadow-sm">
+                            <div class="w-full bg-gray-100 dark:bg-white/10 rounded-t-sm h-[40%] relative group">
+                                <div
+                                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Jul</div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-white/10 rounded-t-sm h-[55%] relative group">
+                                <div
+                                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Aug</div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-white/10 rounded-t-sm h-[45%] relative group">
+                                <div
+                                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Sep</div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-white/10 rounded-t-sm h-[65%] relative group">
+                                <div
+                                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Oct</div>
+                            </div>
+                            <div class="w-full bg-primary-green/20 rounded-t-sm h-[60%] relative group">
+                                <div
+                                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-primary-green font-bold">
+                                    Nov</div>
+                            </div>
+                            <div
+                                class="w-full bg-gray-100 dark:bg-white/10 rounded-t-sm h-[30%] border-t-2 border-dashed border-gray-300 dark:border-gray-600 relative group">
+                                <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400">Dec
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="sticky top-[89px] z-10 bg-surface-light/95 dark:bg-background-dark/95 backdrop-blur-md pt-2 pb-4 px-6 border-b border-gray-50 dark:border-white/5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-text-main dark:text-white">My Subscriptions <span
+                                    class="text-primary-green ml-1 text-sm align-top">5</span></h3>
+                            <div class="flex gap-2">
+                                <button
+                                    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">search</span>
+                                </button>
+                                <button
+                                    class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">tune</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                            <button
+                                class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-text-main dark:bg-white text-white dark:text-background-dark px-4 shadow-sm transition-transform active:scale-95">
+                                <span class="text-sm font-semibold">All</span>
+                            </button>
+                            <button
+                                class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 transition-transform active:scale-95">
+                                <span
+                                    class="material-symbols-outlined text-[16px] text-text-secondary">calendar_today</span>
+                                <span class="text-text-main dark:text-white text-sm font-medium">By Date</span>
+                            </button>
+                            <button
+                                class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 transition-transform active:scale-95">
+                                <span
+                                    class="material-symbols-outlined text-[16px] text-text-secondary">attach_money</span>
+                                <span class="text-text-main dark:text-white text-sm font-medium">By Price</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 flex flex-col gap-4">
+                        <!-- Gemini Pro (Mobile) -->
+                        <div onclick="openSubModal(this)" data-name="Gemini Pro" data-price="CAD 27.00" data-img="Google_Gemini_logo.svg" data-status="~C$ 4.05 unused" data-info="150 credits left" class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md cursor-pointer active:scale-[0.98]">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         <img src="Google_Gemini_logo.svg" alt="Gemini" class="w-6 h-6 object-contain">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Gemini Pro</p>
+                                        <p class="text-text-secondary text-xs font-medium">850 / 1000 Credits</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+
+                         <!-- Rogers (Telco) -->
+                         <div onclick="openSubModal(this)" data-name="Rogers Mobile" data-price="CAD 85.00" data-img="Rogers_logo.svg" data-status="Safe to downgrade?" data-info="15GB Rollover" class="cursor-pointer active:scale-[0.98] group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         <img src="Rogers_logo.svg" alt="Rogers" class="w-full h-full object-contain p-1.5">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Rogers Mobile</p>
+                                        <p class="text-text-secondary text-xs font-medium">45GB / 60GB Used</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Spotify Item -->
+                        <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                        <img src="Spotify_logo_without_text.svg" alt="Spotify" class="w-full h-full object-contain p-1.5">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Spotify</p>
+                                        <p class="text-text-secondary text-xs font-medium">42 hrs streamed</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        14.99</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary/60 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Next: Jan 24
+                                </div>
+                                <span class="text-gray-400 font-bold text-xs">Good Value</span>
+                            </div>
+                        </div>
+
+                        <!-- Netflix Item -->
+                        <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                        <img src="Netflix_2016_N_logo.svg" alt="Netflix" class="w-full h-full object-contain p-2">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Netflix</p>
+                                        <p class="text-text-secondary text-xs font-medium">85 hrs watched</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        20.99</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Next: Feb 01
+                                </div>
+                                <span class="text-red-500 font-bold text-xs">High Usage</span>
+                            </div>
+                        </div>
+
+                        <!-- YouTube Premium Item -->
+                        <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                        <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            YouTube Premium</p>
+                                        <p class="text-text-secondary text-xs font-medium">No Ads</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        12.99</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary/60 h-1.5 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Saved ~8hrs ads
+                                </div>
+                                <span class="text-green-600 font-bold text-xs">Worth it</span>
+                            </div>
+                        </div>
+
+                         <!-- Claude Pro Item -->
+                         <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         
+<img src="Claude_AI_logo.svg" alt="Claude" class="w-6 h-6 object-contain">
+
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Claude Pro</p>
+                                        <p class="text-text-secondary text-xs font-medium">12 Prompts Sent</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        27.00</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary/30 h-1.5 rounded-full" style="width: 15%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Low Usage
+                                </div>
+                                <span class="text-primary font-bold text-xs">Review?</span>
+                            </div>
+                        </div>
+                        
+                         <!-- Hulu Item -->
+                         <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         
+<img src="Hulu_logo_(2018).svg" alt="Hulu" class="w-full h-full object-contain p-2">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            Hulu</p>
+                                        <p class="text-text-secondary text-xs font-medium">No Ads</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        18.99</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary/30 h-1.5 rounded-full" style="width: 5%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Next: Feb 15
+                                </div>
+                                <span class="text-primary font-bold text-xs">Cancel?</span>
+                            </div>
+                        </div>
+
+                         <!-- YouTube Music Item -->
+                         <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            YouTube Music</p>
+                                        <p class="text-text-secondary text-xs font-medium">Family Plan</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        16.99</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 80%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    High Usage
+                                </div>
+                                <span class="text-green-600 font-bold text-xs">Keep it</span>
+                            </div>
+                        </div>
+
+                         <!-- BMO Premium Item -->
+                         <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         <img src="BMO_Logo.svg" alt="BMO" class="w-full h-full object-contain p-1">
+
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            BMO Eclipse Visa</p>
+                                        <p class="text-text-secondary text-xs font-medium">Premium Banking</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        120.00</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    Annual Fee
+                                </div>
+                                <span class="text-primary font-bold text-xs">Active</span>
+                            </div>
+                        </div>
+
+                         <!-- iPhone 15 Pro Max Item -->
+                         <div class="group flex flex-col bg-surface-light dark:bg-white/5 rounded-2xl p-4 shadow-card border border-gray-100 dark:border-white/5 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                         <img src="Apple_logo_black.svg" alt="Apple" class="w-full h-full object-contain p-2">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-text-main dark:text-white text-base font-bold leading-none mb-1">
+                                            iPhone 15 Pro Max</p>
+                                        <p class="text-text-secondary text-xs font-medium">Device Plan</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-text-main dark:text-white text-base font-bold leading-normal">CAD
+                                        55.00</p>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    12/24 Months
+                                </div>
+                                <span class="text-gray-400 font-bold text-xs">Financing</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="h-6"></div>
+                    <!-- Floating Action Button -->
+                    <button
+                        class="absolute bottom-24 right-6 size-14 rounded-full bg-primary-green text-white shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 transition-transform z-30">
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
+                </div>
+
+                <!-- VIEW: Heatmap -->
+                <div id="view-heatmap"
+                    class="hidden flex-1 flex flex-col overflow-y-auto w-full h-full bg-background-heat dark:bg-background-dark pb-32 relative">
+                    <!-- Brand Glow Effect -->
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary-green/20 rounded-full blur-3xl pointer-events-none z-0"></div>
+                    
+                    <header
+                        class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-heat/95 dark:bg-background-dark/95 backdrop-blur-sm">
+                        <button
+                            class="btn-back-dashboard flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-text-main dark:text-text-main-dark"
+                                style="font-size: 24px;">arrow_back</span>
+                        </button>
+                        <h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Usage Heatmap
+                        </h2>
+                        <div class="flex size-10 items-center justify-end">
+                            <button
+                                class="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-text-main dark:text-text-main-dark"
+                                    style="font-size: 24px;">sync</span>
+                            </button>
+                        </div>
+                    </header>
+                    <main class="flex-1 flex flex-col gap-6 pb-24">
+                        <div class="px-4">
+                            <div
+                                class="flex h-12 w-full items-center justify-center rounded-xl bg-primary-green/10 dark:bg-surface-dark p-1">
+                                <label
+                                    class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm text-text-sub-light dark:text-text-sub-dark has-[:checked]:text-primary-green font-bold text-sm transition-all duration-200">
+                                    <span class="truncate">Weekly</span>
+                                    <input class="invisible w-0 h-0 absolute" name="period" type="radio"
+                                        value="weekly" />
+                                </label>
+                                <label
+                                    class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm text-text-sub-light dark:text-text-sub-dark has-[:checked]:text-primary-green font-bold text-sm transition-all duration-200">
+                                    <span class="truncate">Monthly</span>
+                                    <input checked="" class="invisible w-0 h-0 absolute" name="period" type="radio"
+                                        value="monthly" />
+                                </label>
+                            </div>
+                        </div>
+                        <div class="px-4">
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800">
+                                <!-- Calendar Grid simplified for SPA -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <button id="heatmap-prev-month"
+                                        class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/10">
+                                        <span class="material-symbols-outlined text-text-main dark:text-text-main-dark"
+                                            style="font-size: 20px;">chevron_left</span>
+                                    </button>
+                                    <p id="heatmap-month-label" class="text-base font-bold">October 2023</p>
+                                    <button id="heatmap-next-month"
+                                        class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent"
+                                        disabled>
+                                        <span class="material-symbols-outlined text-text-main dark:text-text-main-dark"
+                                            style="font-size: 20px;">chevron_right</span>
+                                    </button>
+                                </div>
+                                <!-- Days Header -->
+                                <div class="grid grid-cols-7 gap-y-2 gap-x-1 mb-2">
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        S</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        M</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        T</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        W</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        T</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        F</div>
+                                    <div
+                                        class="text-center text-xs font-semibold text-text-sub-light dark:text-text-sub-dark">
+                                        S</div>
+                                </div>
+                                <!-- Calendar Days Container -->
+                                <div id="heatmap-days-container" class="grid grid-cols-7 gap-y-2 gap-x-1">
+                                    <!-- Days will be injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Credit Overview -->
+                        <div class="px-4">
+                            <div class="bg-surface-light dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/5">
+                                <h3 class="font-bold text-text-main dark:text-white mb-3">Rollover Credit</h3>
+                                <div class="flex items-center gap-4">
+                                     <div class="size-16 rounded-full border-[6px] border-primary-green/20 border-t-primary-green flex items-center justify-center">
+                                         <span class="text-xs font-bold text-primary-green">65%</span>
+                                     </div>
+                                     <div>
+                                         <p class="text-xs text-gray-500">Total Available</p>
+                                         <p class="text-xl font-bold text-text-main dark:text-white">C$ 51.70</p>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Inquiry -->
+                        <div class="px-4">
+                             <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-5 shadow-md text-white relative overflow-hidden">
+                                 <div class="relative z-10">
+                                     <h3 class="font-bold text-lg mb-1">Inquiry <span id="analytics-bank-name">Bank</span></h3>
+                                     <p class="text-sm text-blue-100 mb-4 opacity-90">Find better subscription plans based on your spending.</p>
+                                     <button id="btn-inquiry-bank" class="bg-white text-blue-600 px-5 py-2 rounded-lg font-bold text-sm hover:bg-blue-50 transition-colors shadow-sm">
+                                         Go
+                                     </button>
+                                 </div>
+                                 <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
+                             </div>
+                        </div>
+                    </main>
+                </div>
+
+                <!-- VIEW: Credit Content (Mobile) -->
+                <div id="view-credit"
+                     class="hidden flex-1 flex flex-col overflow-y-auto w-full h-full bg-background-heat dark:bg-background-dark pb-32 relative">
+                    <!-- Brand Glow -->
+                    
+                    
+                    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-heat/95 dark:bg-background-dark/95 backdrop-blur-sm">
+                        <button class="btn-back-dashboard flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-text-main dark:text-text-main-dark" style="font-size: 24px;">arrow_back</span>
+                        </button>
+                        <h2 class="text-lg font-bold leading-tight flex-1 text-center">Credit Vault</h2>
+                        <div class="size-10"></div> <!-- Spacer -->
+                    </header>
+
+                    <main class="flex-1 flex flex-col gap-6 px-4 pt-2">
+                        <!-- Total Value Card -->
+                                                <!-- Total Value Card (Simplified) -->
+                        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-white/5 flex flex-col items-center justify-center text-center">
+                             <p class="text-sm font-medium text-text-secondary mb-1">Total Unused Value</p>
+                             <h2 class="text-5xl font-extrabold text-primary">C$ 51.70</h2>
+                             <p class="text-xs text-gray-400 mt-2">Accumulated from 6 accounts</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-primary to-primary/90 text-white shadow-md relative overflow-hidden">
+                                 <div class="relative z-10 flex flex-col gap-2">
+                                     <div class="flex items-start justify-between">
+                                         <div>
+                                            <p class="text-xs text-white/80 font-medium">Smart Savings</p>
+                                            <h4 class="font-bold text-lg">Cash out to TFSA</h4>
+                                         </div>
+                                         <span class="material-symbols-outlined bg-white/20 p-1.5 rounded-lg">account_balance</span>
+                                     </div>
+                                     <p class="text-sm text-white/90 opacity-90">Invest your $54.55 credit into a High Interest Savings Account.</p>
+                                     <button class="mt-2 text-xs font-bold bg-white text-primary py-2 px-4 rounded-lg self-start">Transfer Now</button>
+                                 </div>
+                                 <div class="absolute -right-4 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                             </div>
+
+                        <!-- Credit Breakdown List -->
+                        <div class="flex flex-col gap-3">
+                             <h3 class="font-bold text-text-main dark:text-white">Rollover Credits</h3>
+                             
+                             <!-- Rogers Mobile -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="Rogers_logo.svg" alt="Rogers" class="w-full h-full object-contain p-1.5">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">Rogers Mobile</p>
+                                     <p class="text-xs text-gray-500">15GB Data Rollover</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-primary-green text-sm flex items-center justify-end gap-1">
+                                         <span class="material-symbols-outlined text-[16px]">monetization_on</span>
+                                         $28.50
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Expires in 28d</p>
+                                 </div>
+                             </div>
+
+                             <!-- Claude Pro -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="Claude_AI_logo.svg" alt="Claude" class="w-6 h-6 object-contain">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">Claude Pro</p>
+                                     <p class="text-xs text-gray-500">Low Usage (12 prompts)</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-primary-green text-sm flex items-center justify-end gap-1">
+                                         <span class="material-symbols-outlined text-[16px]">monetization_on</span>
+                                         $22.00
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Rollover</p>
+                                 </div>
+                             </div>
+                             
+                             <!-- Hulu -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="Hulu_logo_(2018).svg" alt="Hulu" class="w-full h-full object-contain p-2">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">Hulu No Ads</p>
+                                     <p class="text-xs text-gray-500">Watched 2h 40m</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-primary-green text-sm flex items-center justify-end gap-1">
+                                         <span class="material-symbols-outlined text-[16px]">monetization_on</span>
+                                         $1.20
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Rollover</p>
+                                 </div>
+                             </div>
+
+                             <!-- Netflix (0 Credit) -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 opacity-75">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="Netflix_2016_N_logo.svg" alt="Netflix" class="w-full h-full object-contain p-2">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">Netflix Premium</p>
+                                     <p class="text-xs text-gray-500">Top 5% Usage</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-gray-400 text-sm flex items-center justify-end gap-1">
+                                         $0.00
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Fully Used</p>
+                                 </div>
+                             </div>
+
+                             <!-- Spotify (0 Credit) -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 opacity-75">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="Spotify_logo_without_text.svg" alt="Spotify" class="w-full h-full object-contain p-1.5">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">Spotify Duo</p>
+                                     <p class="text-xs text-gray-500">Avg 1.4hrs/day</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-gray-400 text-sm flex items-center justify-end gap-1">
+                                         $0.00
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Fully Used</p>
+                                 </div>
+                             </div>
+                             
+                             <!-- YouTube (0 Credit) -->
+                             <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 opacity-75">
+                                 <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                     <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                 </div>
+                                 <div class="flex-1">
+                                     <p class="font-bold text-sm text-text-main dark:text-white">YouTube Premium</p>
+                                     <p class="text-xs text-gray-500">Saved 8h ads</p>
+                                 </div>
+                                 <div class="text-right">
+                                     <p class="font-bold text-gray-400 text-sm flex items-center justify-end gap-1">
+                                         $0.00
+                                     </p>
+                                     <p class="text-[10px] text-gray-400">Fully Used</p>
+                                 </div>
+                             </div>
+                        </div>
+
+                        <!-- Calculator Section -->
+                                                <!-- Discounter Entry Point -->
+                        <div class="p-5 bg-surface-light dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm mb-20">
+                            <h3 class="font-bold text-text-main dark:text-white mb-2">Credit Discounter</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                Maximize your savings by applying unused rollover credits to your active subscriptions.
+                            </p>
+                            <button id="btn-open-discounter" class="w-full py-3 bg-primary/10 text-primary-green rounded-xl font-bold hover:bg-primary/20 transition-colors">
+                                Use Discounter Tool
+                            </button>
+                        </div>
+
+                        <!-- Bank Integration / Offers -->
+                        
+                    </main>
+                </div>
+
+                                <!-- VIEW: Discounter (Mobile Only) -->
+                <div id="view-discounter" class="hidden flex-1 flex flex-col overflow-y-auto w-full h-full bg-background-heat dark:bg-background-dark pb-32 relative">
+                    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-heat/95 dark:bg-background-dark/95 backdrop-blur-sm">
+                        <button class="btn-back-credit flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-text-main dark:text-text-main-dark" style="font-size: 24px;">arrow_back</span>
+                        </button>
+                        <h2 class="text-lg font-bold leading-tight flex-1 text-center">Credit Discounter</h2>
+                        <div class="size-10"></div>
+                    </header>
+                    <main class="flex-1 p-6">
+                        <div class="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Apply to Service</label>
+                                    <div class="relative">
+                                        <select id="calc-select-service" class="w-full bg-gray-50 dark:bg-black/20 rounded-xl p-3 text-text-main dark:text-white font-bold outline-none appearance-none">
+                                            <option value="17.00">Netflix (.00)</option>
+                                            <option value="24.00">Adobe Cloud (.00)</option>
+                                            <option value="12.99">YouTube Premium (.99)</option>
+                                            <option value="27.00">Claude Pro (.00)</option>
+                                            <option value="18.99">Hulu (.99)</option>
+                                            <option value="0.00">Spotify Free (.00)</option>
+                                        </select>
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined pointer-events-none text-gray-500">expand_more</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Use Credit</label>
+                                    <div class="relative">
+                                        <select id="calc-select-credit" class="w-full bg-gray-50 dark:bg-black/20 rounded-xl p-3 text-primary-green font-bold outline-none appearance-none">
+                                            <option value="28.50">Rogers Mobile (.50)</option>
+                                            <option value="22.00">Claude Pro (.00)</option>
+                                            <option value="1.20">Hulu (.20)</option>
+                                            <option value="0.00">Netflix (.00)</option>
+                                            <option value="0.00">Spotify (.00)</option>
+                                            <option value="0.00">YouTube (.00)</option>
+                                        </select>
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined pointer-events-none text-gray-500">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between text-lg font-bold border-t border-gray-100 dark:border-gray-700 border-dashed pt-2">
+                                    <span class="text-text-main dark:text-white">Final Price</span>
+                                    <span class="text-text-main dark:text-white" id="calc-final-price">.00</span>
+                                </div>
+                                <button class="w-full py-3 bg-primary-green text-white rounded-xl font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary-green/20">
+                                    Apply Discount
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+
+                <!-- Unified Bottom Navigation (Mobile) -->
+                <nav id="bottom-nav"
+                    class="fixed bottom-0 w-full max-w-[390px] bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-white/5 px-6 py-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] z-[100] select-none left-1/2 -translate-x-1/2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                                        <ul class="flex justify-between items-center">
+                        <li class="nav-item group flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            data-target="dashboard" data-active-class="text-primary-green">
+                            <div
+                                class="icon-container p-1 rounded-xl bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-white/5">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-text-main dark:group-hover:text-white">space_dashboard</span>
+                            </div>
+                            <span
+                                class="label text-[10px] font-medium text-gray-400 group-hover:text-text-main dark:group-hover:text-white">Home</span>
+                        </li>
+                        <li class="nav-item group flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            data-target="credit" data-active-class="text-primary-green">
+                            <div
+                                class="icon-container p-1 rounded-xl bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-white/5">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-text-main dark:group-hover:text-white">account_balance_wallet</span>
+                            </div>
+                            <span
+                                class="label text-[10px] font-medium text-gray-400 group-hover:text-text-main dark:group-hover:text-white">Credit</span>
+                        </li>
+                        <li class="nav-item group flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            data-target="heatmap" data-active-class="text-primary-green">
+                            <div
+                                class="icon-container p-1 rounded-xl bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-white/5">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-text-main dark:group-hover:text-white">pie_chart</span>
+                            </div>
+                            <span
+                                class="label text-[10px] font-medium text-gray-400 group-hover:text-text-main dark:group-hover:text-white">Analytics</span>
+                        </li>
+                        <li class="nav-item group flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            data-target="profile" data-active-class="text-primary-green">
+                            <div
+                                class="icon-container p-1 rounded-xl bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-white/5">
+                                <span
+                                    class="material-symbols-outlined text-gray-400 group-hover:text-text-main dark:group-hover:text-white">person</span>
+                            </div>
+                            <span
+                                class="label text-[10px] font-medium text-gray-400 group-hover:text-text-main dark:group-hover:text-white">Profile</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div> <!-- End Mobile Layout -->
+
+            <!-- DESKTOP LAYOUT (>= md) -->
+            <div id="desktop-layout"
+                class="hidden md:flex h-full">
+                <!-- Sidebar -->
+                <aside
+                    class="w-64 bg-surface-light dark:bg-gray-900 border-r border-gray-200 dark:border-white/5 flex flex-col shrink-0">
+                    <div class="p-6">
+                        <div class="flex items-center gap-2">
+                            <img src="MySub.svg" alt="MySub" class="h-8 w-auto">
+                        </div>
+                    </div>
+                                        <nav class="flex-1 px-4 space-y-1">
+                        <a href="#" id="desktop-nav-dashboard"
+                            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg bg-primary-green/10 text-primary-green">
+                            <span class="material-symbols-outlined filled">space_dashboard</span>
+                            Dashboard
+                        </a>
+                        <a href="#" id="desktop-nav-credit"
+                            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">account_balance_wallet</span>
+                            Credit
+                        </a>
+                        <a href="#" id="desktop-nav-analytics"
+                            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">pie_chart</span>
+                            Analytics
+                        </a>
+                        <a href="#"
+                            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">person</span>
+                            Profile
+                        </a>
+                    </nav>
+                    <div class="p-4 border-t border-gray-200 dark:border-white/5">
+                        <div class="flex items-center gap-3 px-4 py-2">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 bg-gray-200"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD61bMB5WRouAwgj9Fb__3Laq20H9TuOdmL6IHp9sFkNQ0Qf4mkPoDqrCrJGwXaEtrnmUy_RH71De1v2VyYqUzUSHIlUhSgDPC4scrZouAwrDyaX5G09Otr-Ylzg4kcQIZCdDJMAIvWF_l-MbOyAYBBEdUtqS32yjfT0Lj3gqZwTQrnb8RfZJX9z0LIf_uNcVuTMU2pCoFj1GK5VG1pgrdIl3qPfxKZeJ5T6Bpq0eGpQ-hAG4yUpIMaR4rxoQVYaF8qYYE1ph3Nqvgp");'>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-sm font-bold text-text-main dark:text-white">John Doe</p>
+                                <p class="text-xs text-text-secondary">Basic Plan</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Desktop Content Area -->
+                <main class="flex-1 overflow-y-auto p-8">
+                    <div id="desktop-view-dashboard" class="h-full flex flex-col">
+                    <header class="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 class="text-2xl font-bold text-text-main dark:text-white">Dashboard</h1>
+                            <p class="text-sm text-text-secondary mt-1">Manage your subscriptions and track spending.
+                            </p>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[20px]">search</span>
+                                <input type="text" placeholder="Search..."
+                                    class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20">
+                            </div>
+                            <button
+                                class="flex items-center gap-2 px-4 py-2 bg-primary-green text-white rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">add</span>
+                                Add New
+                            </button>
+                        </div>
+                    </header>
+
+                    <!-- Desktop Stats Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Card 1 -->
+                        <div
+                            class="col-span-1 rounded-2xl bg-gray-900 dark:bg-gray-800 text-white shadow-card p-6 relative overflow-hidden group">
+                            <div
+                                class="absolute top-0 right-0 w-64 h-64 bg-primary-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4">
+                            </div>
+                            <div class="relative z-10">
+                                <p class="text-gray-300 text-sm font-medium mb-1">Monthly Savings</p>
+                                <h3 class="text-4xl font-bold text-primary-green mb-4">C$ 32.00</h3>
+                                <div class="flex items-center gap-2 text-sm text-gray-300">
+                                    <span
+                                        class="bg-white/20 p-1 rounded text-white material-symbols-outlined text-[16px]">trending_up</span>
+                                    <span>+12% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card 2: Chart Placeholder -->
+                        <div
+                            class="col-span-1 lg:col-span-2 rounded-2xl bg-white dark:bg-gray-800 shadow-card p-6 border border-gray-100 dark:border-white/5 flex flex-col justify-between">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-lg text-text-main dark:text-white">Spending Trend</h3>
+                                <button class="text-sm text-primary-green font-semibold">View Report</button>
+                            </div>
+                            <div class="flex-1 flex items-end gap-4 h-32">
+                                <!-- Simple Desktop Bars -->
+                                <div class="flex-1 bg-gray-100 dark:bg-white/10 rounded-t-md h-[40%]"></div>
+                                <div class="flex-1 bg-gray-100 dark:bg-white/10 rounded-t-md h-[60%]"></div>
+                                <div class="flex-1 bg-gray-100 dark:bg-white/10 rounded-t-md h-[55%]"></div>
+                                <div class="flex-1 bg-gray-100 dark:bg-white/10 rounded-t-md h-[75%]"></div>
+                                <div
+                                    class="flex-1 bg-primary-green rounded-t-md h-[65%] shadow-lg shadow-primary-green/20 relative">
+                                    <div
+                                        class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded">
+                                        $124</div>
+                                </div>
+                                <div
+                                    class="flex-1 bg-gray-100 dark:bg-white/10 rounded-t-md h-[30%] border-t-2 border-dashed border-gray-300">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between mt-2 text-xs text-gray-400">
+                                <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Grid List -->
+                    <div class="flex flex-col gap-6">
+                        <!-- Desktop Header / Tool Bar -->
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-text-main dark:text-white flex items-center gap-2">
+                                Active Subscriptions 
+                                <span class="flex items-center justify-center bg-primary-green/10 text-primary-green text-sm font-bold h-6 min-w-[24px] px-1.5 rounded-full">6</span>
+                            </h3>
+                            
+                             <!-- Desktop Search/Filter Tools (Mirrors Mobile Style) -->
+                            <div class="flex gap-3">
+                                <button id="btn-desktop-all" class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-primary-green text-white px-4 shadow-sm shadow-primary-green/20 transition-transform active:scale-95">
+                                    <span class="text-sm font-bold">All</span>
+                                </button>
+                                <button id="btn-desktop-date" class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 hover:border-primary-green/50 transition-all active:scale-95 group">
+                                    <span class="material-symbols-outlined text-[16px] text-gray-500 group-hover:text-primary-green transition-colors">calendar_today</span>
+                                    <span class="text-text-main dark:text-white text-sm font-medium group-hover:text-primary-green transition-colors">By Date</span>
+                                </button>
+                                <button id="btn-desktop-price" class="flex h-9 shrink-0 items-center justify-center gap-x-1.5 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 hover:border-primary-green/50 transition-all active:scale-95 group">
+                                    <span class="material-symbols-outlined text-[16px] text-gray-500 group-hover:text-primary-green transition-colors">attach_money</span>
+                                    <span class="text-text-main dark:text-white text-sm font-medium group-hover:text-primary-green transition-colors">By Price</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid content -->
+                        <div id="desktop-subs-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                        <!-- Gemini Pro (Desktop) -->
+                        <div onclick="openSubModal(this)" data-name="Gemini Pro" data-price="C$ 27.00" data-img="Google_Gemini_logo.svg" data-status="~C$ 4.05 value unused" data-info="150 credits remaining" class="flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group cursor-pointer active:scale-[0.98]">
+                            <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                     <img src="Google_Gemini_logo.svg" alt="Gemini" class="w-6 h-6 object-contain">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Gemini Pro</h4>
+                                    <p class="text-xs text-text-secondary truncate">AI Usage • 850 / 1000 Credits</p>
+                                </div>
+                            </div>
+                            <!-- AI Usage Bar -->
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+
+                         <!-- Rogers (Telco) -->
+                        <div onclick="openSubModal(this)" data-name="Rogers Mobile" data-price="C$ 85.00" data-img="Rogers_logo.svg" data-status="Safe to downgrade?" data-info="15GB Rollover"
+                            class="cursor-pointer active:scale-[0.98] flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow group">
+                            <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                     <img src="Rogers_logo.svg" alt="Rogers" class="w-full h-full object-contain p-1.5">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Rogers Mobile</h4>
+                                    <p class="text-xs text-text-secondary truncate">5G Infinite • 45GB / 60GB Used</p>
+                                </div>
+                            </div>
+                            <!-- Data Usage Bar -->
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+
+                        <!-- Spotify Item -->
+                        <div onclick="openSubModal(this)"
+                             data-name="Spotify"
+                             data-price="C$ 14.99"
+                             data-img="Spotify_logo_without_text.svg"
+                             data-status="Good Value"
+                             data-info="Avg. 1.4 hrs/day"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="Spotify_logo_without_text.svg" alt="Spotify" class="w-full h-full object-contain p-1.5">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Spotify</h4>
+                                    <p class="text-xs text-text-secondary truncate">Duo Plan • 42 hrs streamed</p>
+                                </div>
+                             </div>
+                              <!-- Usage Bar (Time) -->
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary/60 h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Netflix Item -->
+                        <div onclick="openSubModal(this)"
+                             data-name="Netflix"
+                             data-price="C$ 20.99"
+                             data-img="Netflix_2016_N_logo.svg"
+                             data-status="High Usage"
+                             data-info="Top 5% Viewer"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="Netflix_2016_N_logo.svg" alt="Netflix" class="w-full h-full object-contain p-2">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Netflix</h4>
+                                    <p class="text-xs text-text-secondary truncate">Premium UHD • 85 hrs</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+
+                        <!-- YouTube Premium Item -->
+                        <div onclick="openSubModal(this)"
+                             data-name="YouTube Premium"
+                             data-price="C$ 12.99"
+                             data-img="YouTube_Premium_logo.svg"
+                             data-status="Worth it"
+                             data-info="Saved ~8hrs of ads"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">YouTube Premium</h4>
+                                    <p class="text-xs text-text-secondary truncate">Individual • No Ads</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary/60 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Claude Pro (AI) -->
+                        <div onclick="openSubModal(this)"
+                             data-name="Claude Pro"
+                             data-price="C$ 27.00"
+                             data-img="Claude_AI_logo.svg"
+                             data-status="Review"
+                             data-info="Only 12 prompts sent"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    
+<img src="Claude_AI_logo.svg" alt="Claude" class="w-6 h-6 object-contain">
+
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Claude Pro</h4>
+                                    <p class="text-xs text-text-secondary truncate">AI Assistant • Low Usage</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary/30 h-2 rounded-full" style="width: 15%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Hulu Item -->
+                        <div onclick="openSubModal(this)"
+                             data-name="Hulu"
+                             data-price="C$ 18.99"
+                             data-img="Hulu_logo_(2018).svg"
+                             data-status="Cancel?"
+                             data-info="Last watched: 3w ago"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    
+<img src="Hulu_logo_(2018).svg" alt="Hulu" class="w-full h-full object-contain p-2">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">Hulu</h4>
+                                    <p class="text-xs text-text-secondary truncate">No Ads • Monthly</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary/30 h-2 rounded-full" style="width: 5%"></div>
+                            </div>
+                        </div>
+
+                         <!-- YouTube Music (Desktop) -->
+                        <div onclick="openSubModal(this)"
+                             data-name="YouTube Music"
+                             data-price="C$ 16.99"
+                             data-img="YouTube_Premium_logo.svg"
+                             data-status="Keep it"
+                             data-info="20 hours listening"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">YouTube Music</h4>
+                                    <p class="text-xs text-text-secondary truncate">Family Plan • High Usage</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+
+                         <!-- BMO Premium (Desktop) -->
+                        <div onclick="openSubModal(this)"
+                             data-name="BMO Eclipse Visa"
+                             data-price="C$ 120.00"
+                             data-img="BMO_Logo.svg"
+                             data-status="Active"
+                             data-info="Annual Fee"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="BMO_Logo.svg" alt="BMO" class="w-full h-full object-contain p-1">
+
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">BMO Eclipse Visa</h4>
+                                    <p class="text-xs text-text-secondary truncate">Premium Banking</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                         <!-- iPhone 15 Pro Max (Desktop) -->
+                        <div onclick="openSubModal(this)"
+                             data-name="iPhone 15 Pro Max"
+                             data-price="C$ 55.00"
+                             data-img="Apple_logo_black.svg"
+                             data-status="12/24 Paid"
+                             data-info="Finance"
+                             class="cursor-pointer active:scale-[0.98] group flex flex-col p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3 text-primary shrink-0">
+                                    <img src="Apple_logo_black.svg" alt="Apple" class="w-full h-full object-contain p-2">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-text-main dark:text-white truncate">iPhone 15 Pro Max</h4>
+                                    <p class="text-xs text-text-secondary truncate">Device Plan • 24 Months</p>
+                                </div>
+                             </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-2 overflow-hidden">
+                                <div class="bg-primary h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div> <!-- End Desktop Dashboard -->
+
+                    <!-- Desktop Heatmap (Initially Hidden) -->
+                                        <!-- Desktop Heatmap (Initially Hidden) -->
+                    <div id="desktop-view-heatmap" class="hidden h-full flex-col">
+                         <header class="mb-8">
+                             <h1 class="text-2xl font-bold text-text-main dark:text-white">Analytics</h1>
+                             <p class="text-sm text-text-secondary mt-1">Visualize your subscription usage.</p>
+                         </header>
+                         
+                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Left Col: Calendar -->
+                            <div class="bg-surface-light dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-white/5">
+                                <!-- Calendar Grid simplified for SPA -->
+                                <div class="flex items-center justify-between mb-6">
+                                    <button class="js-heatmap-prev p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                                        <span class="material-symbols-outlined text-text-main dark:text-white">chevron_left</span>
+                                    </button>
+                                    <p class="js-heatmap-month-label text-xl font-bold text-text-main dark:text-white">January 2026</p>
+                                    <button class="js-heatmap-next p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors" disabled>
+                                        <span class="material-symbols-outlined text-text-main dark:text-white">chevron_right</span>
+                                    </button>
+                                </div>
+                                <!-- Days Header -->
+                                <div class="grid grid-cols-7 gap-y-4 gap-x-2 mb-4">
+                                    <div class="text-center text-sm font-semibold text-text-secondary">S</div>
+                                    <div class="text-center text-sm font-semibold text-text-secondary">M</div>
+                                    <div class="text-center text-sm font-semibold text-text-secondary">T</div>
+                                    <div class="text-center text-sm font-semibold text-text-secondary">T</div>
+                                    <div class="text-center text-sm font-semibold text-text-secondary">F</div>
+                                    <div class="text-center text-sm font-semibold text-text-secondary">S</div>
+                                </div>
+                                <!-- Calendar Days Container -->
+                                <div class="js-heatmap-days-container grid grid-cols-7 gap-y-4 gap-x-2">
+                                    <!-- Days will be injected by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Right Col: New Cards -->
+                            <div class="space-y-6">
+                                <!-- Credit Overview Card -->
+                                <div class="bg-surface-light dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-white/5">
+                                    <h3 class="font-bold text-text-main dark:text-white mb-4">Rollover Credit</h3>
+                                    <div class="flex items-center gap-4">
+                                         <div class="size-20 rounded-full border-[8px] border-primary-green/20 border-t-primary-green flex items-center justify-center">
+                                             <span class="text-lg font-bold text-primary-green">65%</span>
+                                         </div>
+                                         <div>
+                                             <p class="text-sm text-gray-500">Total Available</p>
+                                             <p class="text-2xl font-bold text-text-main dark:text-white">C$ 51.70</p>
+                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bank Inquiry Card -->
+                                <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group">
+                                     <div class="relative z-10">
+                                         <h3 class="font-bold text-xl mb-2">Inquiry <span class="desk-analytics-bank-name">BMO</span></h3>
+                                         <p class="text-blue-100 mb-6 opacity-90 leading-relaxed">Find better subscription plans based on your spending patterns.</p>
+                                         <button class="bg-white text-blue-600 px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors shadow-sm">
+                                             Go
+                                         </button>
+                                     </div>
+                                     <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+
+                    <!-- Desktop Credit View (Initially Hidden) -->
+                    <div id="desktop-view-credit" class="hidden h-full flex-col">
+                         <header class="mb-8">
+                             <h1 class="text-2xl font-bold text-text-main dark:text-white">Credit Vault</h1>
+                             <p class="text-sm text-text-secondary mt-1">Manage unused value and bank offers.</p>
+                         </header>
+
+                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- Left: Total Unused Value -->
+                            <div class="lg:col-span-2 bg-gray-900 dark:bg-gray-800 text-white rounded-2xl p-8 shadow-md relative overflow-hidden flex flex-col justify-center">
+                                 <div class="absolute top-0 right-0 w-64 h-64 bg-primary-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+                                 <div class="relative z-10 flex justify-between items-end">
+                                    <div>
+                                        <p class="text-gray-300 font-medium mb-2 text-lg">Total Unused Value</p>
+                                        <h3 class="text-6xl font-bold text-primary-green">C$ 51.70</h3>
+                                        <p class="text-base text-gray-400 mt-3">Recoverable value from 6 subscriptions</p>
+                                    </div>
+                                    <div class="text-right">
+                                         
+                                    </div>
+                                 </div>
+                            </div>
+
+                            <!-- Right: Actions -->
+                            <div class="space-y-4">
+                                <!-- Credit Discounter (Styled like Mobile Smart Savings) -->
+                                <div class="p-5 rounded-2xl bg-gradient-to-br from-primary to-primary/90 text-white shadow-md relative overflow-hidden group hover:scale-[1.02] transition-transform cursor-pointer">
+                                     <div class="relative z-10">
+                                         <div class="flex items-start justify-between mb-2">
+                                             <div>
+                                                <p class="text-xs text-white/80 font-bold uppercase tracking-wide opacity-80">Smart Savings</p>
+                                                <h4 class="font-bold text-xl mt-0.5">Credit Discounter</h4>
+                                             </div>
+                                             <div class="bg-white/20 p-2 rounded-lg backdrop-blur-md">
+                                                 <span class="material-symbols-outlined">calculate</span>
+                                             </div>
+                                         </div>
+                                         <p class="text-sm text-white/90 mb-4 opacity-90 leading-tight">Maximize savings by applying unused credits.</p>
+                                         <button id="btn-desktop-open-discounter" class="text-xs font-bold bg-white text-primary py-2.5 px-4 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+                                             Open Tool
+                                         </button>
+                                     </div>
+                                     <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl group-hover:bg-white/20 transition-colors"></div>
+                                </div>
+
+                                <!-- Exclusive Offer -->
+                                <div class="p-5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/5 shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors cursor-pointer">
+                                    <div class="flex items-start justify-between mb-2">
+                                         <div>
+                                            <p class="text-xs text-primary font-bold uppercase tracking-wide">Exclusive Offer</p>
+                                            <h4 class="font-bold text-xl text-text-main dark:text-white mt-0.5">Cash Out</h4>
+                                         </div>
+                                         <div class="bg-primary/10 p-2 rounded-lg text-primary">
+                                             <span class="material-symbols-outlined">savings</span>
+                                         </div>
+                                     </div>
+                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-tight">Transfer your unused $54.55 directly to a High Interest Savings Account.</p>
+                                      <div class="flex items-center gap-2 font-bold text-sm text-primary">
+                                         <span>Start Transfer</span>
+                                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- List -->
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden flex flex-col">
+                                    <h3 class="font-bold px-6 py-4 border-b border-gray-100 dark:border-white/5 text-text-main dark:text-white">Rollover Credits</h3>
+                                    
+                                    <div class="divide-y divide-gray-100 dark:divide-white/5 overflow-y-auto max-h-[320px]">
+                                        <!-- Item 1 -->
+                                        <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                             <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                                 <img src="Rogers_logo.svg" alt="Rogers" class="w-full h-full object-contain p-1.5">
+                                             </div>
+                                             <div class="flex-1">
+                                                 <p class="font-bold text-text-main dark:text-white">Rogers Mobile</p>
+                                                 <p class="text-xs text-gray-500">15GB Data Rollover</p>
+                                             </div>
+                                             <div class="text-right">
+                                                 <p class="font-bold text-lg text-primary-green relative">
+                                                    $28.50
+                                                 </p>
+                                             </div>
+                                        </div>
+                                        <!-- Item 2 -->
+                                        <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                             <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                                 <img src="Claude_AI_logo.svg" alt="Claude" class="w-6 h-6 object-contain">
+                                             </div>
+                                             <div class="flex-1">
+                                                 <p class="font-bold text-text-main dark:text-white">Claude Pro</p>
+                                                 <p class="text-xs text-gray-500">Low Usage (12 prompts)</p>
+                                             </div>
+                                             <div class="text-right">
+                                                 <p class="font-bold text-lg text-primary-green relative">
+                                                    $22.00
+                                                 </p>
+                                             </div>
+                                        </div>
+                                         <!-- Item 3 -->
+                                        <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                             <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                                 <img src="Hulu_logo_(2018).svg" alt="Hulu" class="w-full h-full object-contain p-2">
+                                             </div>
+                                             <div class="flex-1">
+                                                 <p class="font-bold text-text-main dark:text-white">Hulu No Ads</p>
+                                                 <p class="text-xs text-gray-500">Watched 2h 40m</p>
+                                             </div>
+                                             <div class="text-right">
+                                                 <p class="font-bold text-lg text-primary-green relative">
+                                                    $1.20
+                                                 </p>
+                                             </div>
+                                        </div>
+                                        <!-- Item 4 -->
+                                        <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors opacity-75">
+                                            <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                                <img src="Netflix_2016_N_logo.svg" alt="Netflix" class="w-full h-full object-contain p-2">
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-bold text-text-main dark:text-white">Netflix Premium</p>
+                                                <p class="text-xs text-gray-500">Top 5% Usage</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="font-bold text-lg text-gray-400 relative">
+                                                   $0.00
+                                                </p>
+                                            </div>
+                                       </div>
+                                       <!-- Item 5 -->
+                                       <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors opacity-75">
+                                           <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                               <img src="Spotify_logo_without_text.svg" alt="Spotify" class="w-full h-full object-contain p-1.5">
+                                           </div>
+                                           <div class="flex-1">
+                                               <p class="font-bold text-text-main dark:text-white">Spotify Duo</p>
+                                               <p class="text-xs text-gray-500">Avg 1.4hrs/day</p>
+                                           </div>
+                                           <div class="text-right">
+                                               <p class="font-bold text-lg text-gray-400 relative">
+                                                  $0.00
+                                               </p>
+                                           </div>
+                                      </div>
+                                       <!-- Item 6 -->
+                                       <div class="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors opacity-75">
+                                           <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mr-4">
+                                               <img src="YouTube_Premium_logo.svg" alt="YouTube" class="w-full h-full object-contain p-1.5">
+                                           </div>
+                                           <div class="flex-1">
+                                               <p class="font-bold text-text-main dark:text-white">YouTube Premium</p>
+                                               <p class="text-xs text-gray-500">Extensive Usage</p>
+                                           </div>
+                                           <div class="text-right">
+                                               <p class="font-bold text-lg text-gray-400 relative">
+                                                  $0.00
+                                               </p>
+                                           </div>
+                                      </div>
+                                    </div>
+                                </div>
+                    </div>
+                </main>
+            </div>
+
+        </div> <!-- End Main App -->
+
+    </div>
+    <!-- Subscription Detail Modal (Generic) -->
+    <div id="subscription-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-light dark:bg-gray-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative animate-[fadeIn_0.2s_ease-out]">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-2">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="flex flex-col items-center mb-8 mt-2">
+                <div class="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 shadow-inner">
+                     <img id="modal-img" src="" alt="Icon" class="size-12 object-contain">
+                </div>
+                <h3 id="modal-title" class="text-2xl font-bold text-text-main dark:text-white mb-2 text-center">Service Name</h3>
+                <p id="modal-price" class="text-3xl font-extrabold text-primary-green">C$ 00.00</p>
+                <p class="text-xs text-gray-400 mt-1">per month</p>
+            </div>
+            
+            <div class="space-y-3 mb-8">
+                <div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                    <span class="text-sm text-gray-500 font-medium">Insight</span>
+                    <span id="modal-status" class="text-sm font-bold text-text-main dark:text-white">Safe to downgrade?</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                    <span class="text-sm text-gray-500 font-medium">Usage Info</span>
+                    <span id="modal-info" class="text-sm font-bold text-text-main dark:text-white">15GB Rollover</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button class="flex-1 py-3.5 bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
+                    History
+                </button>
+                <button class="flex-1 py-3.5 bg-primary-green text-white rounded-xl font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary-green/25">
+                    Manage
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
