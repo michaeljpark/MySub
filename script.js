@@ -406,7 +406,7 @@
                     
                     // Gradient: Soft Radial for a natural spotlight effect
                     // Using larger spread (60% / 100%) for smoother transition
-                    creditBgLayer.style.backgroundImage = `radial-gradient(circle at center, ${c} 0%, ${darkBrand} 50%, ${darkerBrand} 100%)`;
+                    creditBgLayer.style.backgroundImage = `radial-gradient(circle at top right, ${c} 0%, ${darkBrand} 60%, ${darkerBrand} 100%)`;
                     
                     // Restore motion (random-drift), but remove 'breathe' (brightness flickering)
                     creditBgLayer.style.animation = 'random-drift 20s ease-in-out infinite';

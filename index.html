@@ -262,7 +262,7 @@
                     <div id="desktop-view-dashboard" class="flex flex-col">
                     <header class="flex flex-col md:flex-row md:justify-between items-stretch md:items-center gap-4 md:gap-0 mb-8">
                         <div>
-                            <h1 class="text-2xl md:text-3xl font-bold text-text-main dark:text-white mt-6 md:mt-0">Dashboard</h1>
+                            <h1 class="text-xl md:text-3xl font-bold text-text-main dark:text-white mt-6 md:mt-0">Dashboard</h1>
                             <p class="text-sm text-text-secondary mt-1 hidden md:block">Manage your subscriptions and track spending.
                             </p>
                         </div>
@@ -290,8 +290,8 @@
                                 class="absolute top-0 right-0 w-64 h-64 bg-primary-green/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4">
                             </div>
                             <div class="relative z-10">
-                                <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Monthly Savings</p>
-                                <h3 class="text-lg md:text-2xl md:text-4xl font-bold text-white mb-4 tabular-nums tracking-tight">C$ 51.70</h3>
+                                <p class="text-gray-400 text-[10px] md:text-xs font-semibold uppercase tracking-wider mb-2">Monthly Savings</p>
+                                <h3 class="text-2xl md:text-4xl font-bold text-white mb-4 tabular-nums tracking-tight">C$ 51.70</h3>
                                 <div class="flex items-center gap-2 text-sm text-gray-300">
                                     <span
                                         class="bg-primary-green/20 text-primary-green p-1 rounded text-xs material-symbols-outlined text-[16px] font-bold">trending_up</span>
@@ -303,8 +303,8 @@
                         <div
                             class="col-span-1 lg:col-span-2 rounded-xl bg-white dark:bg-gray-800 shadow-sm p-4 md:p-6 border border-gray-200 dark:border-white/5 flex flex-col justify-between">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="font-bold text-base text-gray-900 dark:text-white">Spending Trend</h3>
-                                <button class="text-xs text-gray-500 hover:text-primary-green font-semibold transition-colors border border-gray-200 px-3 py-1 rounded-md">View Report</button>
+                                <h3 class="font-bold text-sm md:text-base text-gray-900 dark:text-white">Spending Trend</h3>
+                                <button class="text-[10px] md:text-xs text-gray-500 hover:text-primary-green font-semibold transition-colors border border-gray-200 px-3 py-1 rounded-md">View Report</button>
                             </div>
                             <!-- Simple Desktop Bars (Mobile Height Increased) -->
                             <div class="flex-1 flex items-end gap-x-6 h-48 md:h-32 px-2">
@@ -342,7 +342,7 @@
                     <!-- Desktop Grid List -->
                     <div class="mb-4 mt-2">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0 mb-4">
-                            <h3 class="text-lg font-bold text-text-main dark:text-white">Active Subscriptions <span id="desktop-sub-count" class="text-primary-green ml-1 text-sm align-top">0</span></h3>
+                            <h3 class="text-base md:text-lg font-bold text-text-main dark:text-white">Active Subscriptions <span id="desktop-sub-count" class="text-primary-green ml-1 text-xs md:text-sm align-top">0</span></h3>
                             <div class="flex items-center gap-3">
                                 <!-- Restored Service Access: Subtle Entry Point -->
                                 <button id="btn-open-fast-recap" class="flex items-center gap-2 px-4 py-2.5 md:px-3 md:py-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors text-sm md:text-xs font-bold mr-2">
@@ -665,14 +665,14 @@
                             <!-- Right Col: New Cards -->
                             <div class="flex flex-col h-full gap-4">
                                 <!-- Credit Overview Card (Fixed Height) -->
-                                <div class="bg-surface-light dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/5 shrink-0">
+                                <div class="bg-surface-light dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/5 shrink-0 relative">
                                     <h3 class="font-bold text-text-main dark:text-white mb-2 text-base">Rollover Credit</h3>
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-4">
                                              <div class="size-16 rounded-full border-[6px] border-primary-green/20 border-t-primary-green flex items-center justify-center">
                                                  <span class="text-sm font-bold text-primary-green">65%</span>
                                              </div>
-                                             <div>
+                                             <div class="absolute top-5 right-5 text-right md:static md:text-left">
                                                  <p class="text-xs text-gray-500">Total Available</p>
                                                  <p class="text-xl font-bold text-text-main dark:text-white">C$ 51.70</p>
                                              </div>
@@ -742,7 +742,7 @@
 
                          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                             <!-- Left: Total Unused Value -->
-                            <div id="desktop-credit-unused-card" class="lg:col-span-2 bg-gray-900 dark:bg-gray-800 text-white rounded-2xl p-5 md:p-8 shadow-md relative overflow-hidden flex flex-col justify-between transition-colors duration-700 min-h-[320px]">
+                            <div id="desktop-credit-unused-card" class="lg:col-span-2 bg-gray-900 dark:bg-gray-800 text-white rounded-2xl p-5 md:p-8 shadow-md relative overflow-hidden flex flex-col justify-between transition-colors duration-700 min-h-[200px] md:min-h-[320px]">
                                  <!-- Dynamic Gradient Background -->
                                  <div id="credit-card-bg-layer" class="absolute inset-0 opacity-30 animate-gradient-bg pointer-events-none transition-all duration-1000"></div>
                                  
