@@ -181,18 +181,24 @@
     function resetNavStyles() {
         navItems.forEach(item => {
             const iconContainer = item.querySelector('.icon-container');
-            const icon = item.querySelector('.material-symbols-outlined');
+            const icon = item.querySelector('.material-symbols-outlined') || item.querySelector('svg');
             const label = item.querySelector('.label');
 
             // Reset classes to inactive state (gray)
-            iconContainer.classList.remove('bg-primary-green/10');
-            iconContainer.classList.add('bg-transparent');
+            if (iconContainer) {
+                iconContainer.classList.remove('bg-primary-green/10');
+                iconContainer.classList.add('bg-transparent');
+            }
             
-            icon.classList.remove('text-primary-green', 'filled');
-            icon.classList.add('text-gray-400');
+            if (icon) {
+                icon.classList.remove('text-primary-green', 'filled');
+                icon.classList.add('text-gray-400');
+            }
             
-            label.classList.remove('text-primary-green', 'font-bold');
-            label.classList.add('text-gray-400', 'font-medium');
+            if (label) {
+                label.classList.remove('text-primary-green', 'font-bold');
+                label.classList.add('text-gray-400', 'font-medium');
+            }
         });
     }
 
@@ -201,18 +207,24 @@
         const item = navItems[index];
 
         const iconContainer = item.querySelector('.icon-container');
-        const icon = item.querySelector('.material-symbols-outlined');
+        const icon = item.querySelector('.material-symbols-outlined') || item.querySelector('svg');
         const label = item.querySelector('.label');
 
         // Set Active Styles
-        iconContainer.classList.remove('bg-transparent');
-        iconContainer.classList.add('bg-primary-green/10');
+        if (iconContainer) {
+            iconContainer.classList.remove('bg-transparent');
+            iconContainer.classList.add('bg-primary-green/10');
+        }
 
-        icon.classList.remove('text-gray-400');
-        icon.classList.add('text-primary-green', 'filled');
+        if (icon) {
+            icon.classList.remove('text-gray-400');
+            icon.classList.add('text-primary-green', 'filled');
+        }
 
-        label.classList.remove('text-gray-400', 'font-medium');
-        label.classList.add('text-primary-green', 'font-bold');
+        if (label) {
+            label.classList.remove('text-gray-400', 'font-medium');
+            label.classList.add('text-primary-green', 'font-bold');
+        }
     }
 
     // Event Listeners
