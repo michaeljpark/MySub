@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html class="light h-full" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySub - Solutions & Adjust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "rgb(var(--color-primary) / <alpha-value>)",
+                        "primary-green": "rgb(var(--color-primary-green) / <alpha-value>)",
+                        "primary-dark": "rgb(var(--color-primary-dark) / <alpha-value>)",
+                        "background-off": "#f3f4f6",
+                        "surface-light": "#ffffff",
+                        "text-main": "#0d1b12",
+                        "text-secondary": "#5a6b5d",
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background-off text-text-main font-sans antialiased h-full flex flex-col items-center">
+
+    <div class="w-full max-w-5xl px-6 py-12 flex-1">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold mb-1 tracking-tight">Solutions & Adjust</h1>
+                <p class="text-text-secondary font-medium">Manage your subscription adjustments and plan details.</p>
+            </div>
+            <a href="#" id="btn-back-dashboard" class="flex items-center gap-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl font-bold text-sm text-text-main hover:bg-gray-50 transition-all shadow-sm active:scale-[0.98]">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Dashboard
+            </a>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid gap-8">
+            
+            <!-- Quick Actions -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-white p-6 rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:border-primary-green transition-all cursor-pointer group">
+                    <div class="bg-primary-green/10 w-fit p-3 rounded-xl mb-4">
+                        <span class="material-symbols-outlined text-primary-green filled">gavel</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-1 group-hover:text-primary-green transition-colors">Apply for Variable Rate</h3>
+                    <p class="text-sm text-text-secondary leading-snug">Switch to a variable rate plan for better flexibility based on market conditions.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:border-blue-500 transition-all cursor-pointer group">
+                    <div class="bg-blue-50 w-fit p-3 rounded-xl mb-4">
+                        <span class="material-symbols-outlined text-blue-600 filled">privacy_tip</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-1 group-hover:text-blue-600 transition-colors">Plan Adjustment Privacy</h3>
+                    <p class="text-sm text-text-secondary leading-snug">Control who views your financial application data during the adjustment process.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:border-purple-500 transition-all cursor-pointer group">
+                    <div class="bg-purple-50 w-fit p-3 rounded-xl mb-4">
+                        <span class="material-symbols-outlined text-purple-600 filled">history_edu</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">Adjustment History</h3>
+                    <p class="text-sm text-text-secondary leading-snug">Access detailed logs of your previous rate adjustments and inquiries.</p>
+                </div>
+            </section>
+
+            <!-- Proposal & Negotiation Section -->
+            <section class="bg-white rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-100">
+                    <button id="tab-personal" class="flex-1 py-4 text-sm font-bold text-text-main border-b-2 border-primary-green bg-gray-50/50 hover:bg-white transition-colors">
+                        Personal Request
+                    </button>
+                    <button id="tab-business" class="flex-1 py-4 text-sm font-bold text-text-secondary border-b-2 border-transparent hover:text-text-main hover:bg-gray-50 transition-colors">
+                        Enterprise / Business
+                    </button>
+                </div>
+
+                <div class="p-8 space-y-8">
+                    
+                    <!-- 1. Select & Input -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-bold text-text-main">1. Select Subscription to Adjust</label>
+                        
+                        <!-- Search & Select Component -->
+                        <div class="relative group z-20">
+                            <!-- Input Wrapper -->
+                            <div id="search-container-box" class="flex flex-wrap items-center gap-2 w-full p-3 bg-white rounded-xl border border-gray-200 focus-within:border-primary-green focus-within:shadow-[0_0_0_2px_rgba(var(--color-primary),0.2)] transition-all cursor-text">
+                                
+                                <!-- Pills Area -->
+                                <div id="selected-pills-area" class="flex flex-wrap gap-2"></div>
+                                
+                                <!-- Input -->
+                                <div class="flex-1 relative min-w-[150px]">
+                                    <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 text-[20px] pointer-events-none">search</span>
+                                    <input type="text" id="sub-search-input" autocomplete="off" placeholder="Select or search subscriptions..." 
+                                           class="w-full pl-7 pr-4 py-1.5 bg-transparent text-sm font-medium text-text-main placeholder-gray-400 outline-none h-full border-none focus:ring-0">
+                                </div>
+                            </div>
+
+                            <!-- Dropdown Results (Absolute) -->
+                            <div id="search-results-dropdown" class="hidden absolute top-[calc(100%+8px)] left-0 w-full bg-white border border-gray-100 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto no-scrollbar p-2 space-y-1">
+                                <!-- Results injected here -->
+                            </div>
+                        </div>
+
+                        <!-- User Input -->
+                        <div class="mt-4">
+                            <label class="block text-sm font-bold text-text-main mb-2">2. Additional Details</label>
+                            <textarea id="user-inquiry-text" rows="3" placeholder="Describe your issue or request (min 10 characters)..." class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 2. Smart Proposals (Dynamic Cards) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-sm font-bold text-text-main">Smart Savings Proposal</label>
+                            <span id="ai-badge" class="text-xs font-medium text-white px-2 py-1 rounded">AI Suggested</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Card 1 -->
+                            <div class="relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-5 shadow-sm group hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h4 class="font-bold text-text-main">Netflix Standard</h4>
+                                        <p class="text-xs text-text-secondary">Monthly Plan</p>
+                                    </div>
+                                    <span class="bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded-lg">-40% Off</span>
+                                </div>
+                                
+                                <div class="flex items-end justify-between mb-4">
+                                    <div>
+                                        <p class="text-xs text-text-secondary font-medium mb-0.5">Your Usage</p>
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-1.5 w-16 bg-gray-100 rounded-full overflow-hidden">
+                                                <div class="h-full bg-yellow-400 w-[30%]"></div>
+                                            </div>
+                                            <span class="text-xs font-bold text-text-main">Low (30%)</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-text-secondary line-through">$16.49</p>
+                                        <p class="text-xl font-bold text-primary-green">$9.99</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-text-secondary border-t border-gray-50 pt-3">
+                                    Based on your low usage, we recommend negotiating for a retention discount.
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-5 shadow-sm group hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h4 class="font-bold text-text-main">Adobe CC</h4>
+                                        <p class="text-xs text-text-secondary">All Apps</p>
+                                    </div>
+                                    <span id="retention-badge" class="text-xs font-bold px-2 py-1 rounded-lg">Retention Offer</span>
+                                </div>
+                                
+                                <div class="flex items-end justify-between mb-4">
+                                    <div>
+                                        <p class="text-xs text-text-secondary font-medium mb-0.5">Your Usage</p>
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-1.5 w-16 bg-gray-100 rounded-full overflow-hidden">
+                                                <div class="h-full bg-red-400 w-[15%]"></div>
+                                            </div>
+                                            <span class="text-xs font-bold text-text-main">Very Low (15%)</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-text-secondary line-through">$82.49</p>
+                                        <p class="text-xl font-bold text-primary-green">$39.99</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-text-secondary border-t border-gray-50 pt-3">
+                                    You use less than 20% of features. We suggest applying for the retention discount.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Confirmation & Submit -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <div class="flex flex-col items-center gap-6">
+                            <!-- Bank SVG -->
+                            <div class="h-10 opacity-60 grayscale hover:grayscale-0 transition-all">
+                                <!-- Dynamic Bank Logo -->
+                                <img id="bank-logo-img" src="" alt="Bank Logo" class="h-full object-contain">
+                            </div>
+
+                            <label class="flex items-start gap-3 cursor-pointer group select-none max-w-lg mx-auto">
+                                <input type="checkbox" id="terms-check" class="mt-1 w-4 h-4 text-primary-green border-gray-300 rounded focus:ring-primary-green">
+                                <span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">
+                                    I understand that this inquiry will be forwarded to the selected bank's dispute resolution center and MySub acts only as an intermediary data provider.
+                                </span>
+                            </label>
+
+                            <button id="btn-submit-inquiry" disabled class="w-full md:w-auto px-8 py-3 bg-gray-200 text-gray-400 font-bold rounded-xl transition-all cursor-not-allowed flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">send</span>
+                                Submit Inquiry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- JS for Interactivity -->
+             <script>
+                // --- 1. Theme & Bank Logic ---
+                const brands = {
+                    bmo: { color: '#0079C1', logo: 'BMO_Logo.svg' },
+                    cibc: { color: '#C41F3E', logo: 'CIBC_logo_2021.svg' },
+                    rbc: { color: '#005DAA', logo: 'rbc-4-logo-svg-vector.svg' },
+                    scotia: { color: '#EC111A', logo: 'Scotiabank_logo.svg' },
+                    td: { color: '#00853F', logo: 'Toronto-Dominion_Bank_logo.svg' }
+                };
+
+                const savedBank = localStorage.getItem('selectedBank') || 'bmo';
+                
+                function applyTheme() {
+                    const data = brands[savedBank];
+                    if(!data) return;
+
+                    // Helper to hex -> rgb
+                    function hexToRgb(hex) {
+                        let r=0,g=0,b=0;
+                        if(hex.length===4){r=parseInt(hex[1]+hex[1],16);g=parseInt(hex[2]+hex[2],16);b=parseInt(hex[3]+hex[3],16);}
+                        else if(hex.length===7){r=parseInt(hex.substring(1,3),16);g=parseInt(hex.substring(3,5),16);b=parseInt(hex.substring(5,7),16);}
+                        return `${r} ${g} ${b}`;
+                    }
+                    
+                    const rgb = hexToRgb(data.color);
+                    document.documentElement.style.setProperty('--color-primary', rgb);
+                    document.documentElement.style.setProperty('--color-primary-green', rgb);
+                    document.documentElement.style.setProperty('--color-primary-dark', rgb);
+
+                    // Update Logo
+                    const logoImg = document.getElementById('bank-logo-img');
+                    if(logoImg) logoImg.src = data.logo; 
+
+                    // Update AI Badge
+                    const aiBadge = document.getElementById('ai-badge');
+                    if(aiBadge) {
+                        aiBadge.style.backgroundColor = data.color;
+                    }
+
+                    // Update Retention Badge (Light bg, dark text)
+                    const retBadge = document.getElementById('retention-badge');
+                    if(retBadge) {
+                        retBadge.style.backgroundColor = `rgba(${rgb}, 0.1)`;
+                        retBadge.style.color = data.color;
+                    }
+                }
+                
+                // Run Theme immediately
+                applyTheme();
+
+                // --- 2. Search & Form Logic ---
+                const selectedSubs = new Set();
+                const textInput = document.getElementById('user-inquiry-text');
+                const termsCheck = document.getElementById('terms-check');
+                const submitBtn = document.getElementById('btn-submit-inquiry');
+                
+                // Search Elements
+                const searchInput = document.getElementById('sub-search-input');
+                const searchDropdown = document.getElementById('search-results-dropdown');
+                const pillsArea = document.getElementById('selected-pills-area');
+
+                // Mock Data
+                const allSubscriptions = [
+                    "Netflix Premium", "Netflix Standard", "Spotify Individual", "Spotify Duo", "Spotify Family", 
+                    "Adobe Creative Cloud", "Adobe Photoshop", "Adobe Lightroom",
+                    "AWS Services", "Google One (2TB)", "YouTube Premium", "Apple Music", "Apple TV+",
+                    "Disney+ Bundle", "Hulu (No Ads)", "HBO Max", "Amazon Prime",
+                    "Dropbox Plus", "Zoom Pro", "Slack Standard", "Microsoft 365 Personal"
+                ];
+
+                // Search Listeners
+                if(searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const val = e.target.value.toLowerCase().trim();
+                        if(val.length === 0) {
+                            searchDropdown.classList.add('hidden');
+                            return;
+                        }
+
+                        const filtered = allSubscriptions.filter(sub => 
+                            sub.toLowerCase().includes(val) && !selectedSubs.has(sub)
+                        );
+                        renderDropdown(filtered);
+                        searchDropdown.classList.remove('hidden');
+                    });
+
+                    // Trigger FULL list on click/focus
+                    const showAll = () => {
+                         const filtered = allSubscriptions.filter(sub => !selectedSubs.has(sub));
+                         renderDropdown(filtered);
+                         searchDropdown.classList.remove('hidden');
+                    };
+
+                    searchInput.addEventListener('click', showAll);
+                    searchInput.addEventListener('focus', showAll);
+
+                    // Add clicking on the container box to focus input
+                    const containerBox = document.getElementById('search-container-box');
+                    if(containerBox) {
+                        containerBox.addEventListener('click', (e) => {
+                            if(e.target !== searchInput && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SPAN') {
+                                searchInput.focus();
+                            }
+                        });
+                    }
+
+                    // Hide dropdown when clicking outside
+                    document.addEventListener('click', (e) => {
+                        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target) && !containerBox.contains(e.target)) {
+                            searchDropdown.classList.add('hidden');
+                        }
+                    });
+                }
+
+                function renderDropdown(items) {
+                    searchDropdown.innerHTML = '';
+                    if(items.length === 0) {
+                        const div = document.createElement('div');
+                        div.className = "px-4 py-3 text-center text-xs text-gray-400";
+                        div.textContent = "No accounts found.";
+                        searchDropdown.appendChild(div);
+                        return;
+                    }
+
+                    items.forEach(sub => {
+                        const btn = document.createElement('button');
+                        btn.className = "w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-between group";
+                        btn.innerHTML = `
+                            <span class="font-medium text-text-main">${sub}</span>
+                            <span class="text-xs text-gray-400 group-hover:text-primary-green">+ Add</span>
+                        `;
+                        btn.onclick = () => {
+                            addToPills(sub);
+                            searchInput.value = '';
+                            // Keep dropdown open but refresh it
+                            const remaining = allSubscriptions.filter(s => !selectedSubs.has(s) && (s !== sub));
+                            renderDropdown(remaining);
+                            searchInput.focus();
+                        };
+                        searchDropdown.appendChild(btn);
+                    });
+                }
+
+                function addToPills(name) {
+                    if (selectedSubs.has(name)) return;
+                    selectedSubs.add(name);
+                    renderPills();
+                    validateForm();
+                }
+
+                window.removeSubscription = function(name) {
+                    selectedSubs.delete(name);
+                    renderPills();
+                    validateForm();
+                }
+
+                function renderPills() {
+                    pillsArea.innerHTML = '';
+                    selectedSubs.forEach(sub => {
+                        const pill = document.createElement('div');
+                        pill.className = "animate-fade-up bg-primary-green/10 text-primary-green text-xs font-bold pl-3 pr-2 py-1.5 rounded-full flex items-center gap-1.5 border border-primary-green/20";
+                        pill.innerHTML = `
+                            ${sub}
+                            <button onclick="removeSubscription('${sub}')" class="hover:bg-red-50 hover:text-red-500 rounded-full p-0.5 transition-colors">
+                                <span class="material-symbols-outlined text-[14px]">close</span>
+                            </button>
+                        `;
+                        pillsArea.appendChild(pill);
+                    });
+                }
+
+                // Tabs
+                document.getElementById('tab-personal').addEventListener('click', (e) => switchTab(e, 'personal'));
+                document.getElementById('tab-business').addEventListener('click', (e) => switchTab(e, 'business'));
+
+                function switchTab(e, type) {
+                    const personalBtn = document.getElementById('tab-personal');
+                    const businessBtn = document.getElementById('tab-business');
+                    
+                    if (type === 'personal') {
+                        personalBtn.className = "flex-1 py-4 text-sm font-bold text-text-main border-b-2 border-primary-green bg-gray-50/50 hover:bg-white transition-colors animate-fade-up";
+                        businessBtn.className = "flex-1 py-4 text-sm font-bold text-text-secondary border-b-2 border-transparent hover:text-text-main hover:bg-gray-50 transition-colors";
+                    } else {
+                        businessBtn.className = "flex-1 py-4 text-sm font-bold text-text-main border-b-2 border-primary-green bg-gray-50/50 hover:bg-white transition-colors animate-fade-up";
+                        personalBtn.className = "flex-1 py-4 text-sm font-bold text-text-secondary border-b-2 border-transparent hover:text-text-main hover:bg-gray-50 transition-colors";
+                    }
+                }
+
+                // Validation Logic
+                function validateForm() {
+                    const hasSubs = selectedSubs.size > 0;
+                    const hasText = textInput.value.trim().length >= 10;
+                    const isChecked = termsCheck.checked;
+
+                    if (hasSubs && hasText && isChecked) {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
+                        submitBtn.classList.add('bg-primary-green', 'text-white', 'hover:bg-primary-green/90', 'shadow-lg', 'shadow-primary-green/20', 'cursor-pointer', 'active:scale-95');
+                    } else {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
+                        submitBtn.classList.remove('bg-primary-green', 'text-white', 'hover:bg-primary-green/90', 'shadow-lg', 'shadow-primary-green/20', 'cursor-pointer', 'active:scale-95');
+                    }
+                }
+
+                // Listeners
+                textInput.addEventListener('input', validateForm);
+                termsCheck.addEventListener('change', validateForm);
+
+                // Initial render state
+                validateForm();
+
+                // Navigation & Submit Logic
+                const navBackBtn = document.getElementById('btn-back-dashboard');
+
+                // Back Button: Skip login on return
+                if(navBackBtn) {
+                    navBackBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        localStorage.setItem('skipLogin', 'true');
+                        window.location.href = 'index.html';
+                    });
+                }
+
+                // Submit Button: Overlay -> Wait -> Skip login -> Redirect
+                if(submitBtn) {
+                    submitBtn.addEventListener('click', () => {
+                         // Double check not disabled
+                         if(submitBtn.disabled) return;
+                         
+                         const successOverlay = document.getElementById('success-overlay');
+                         const overlayBankLogo = document.getElementById('overlay-bank-logo');
+
+                         // Set logo in overlay
+                         const data = brands[savedBank];
+                         // ... logic ...
+
+                         // Show Overlay
+                         if(successOverlay) {
+                             if(data && overlayBankLogo) {
+                                 overlayBankLogo.src = data.logo;
+                             }
+
+                             successOverlay.classList.remove('hidden');
+                             // Small delay for fade in
+                             requestAnimationFrame(() => {
+                                 successOverlay.classList.remove('opacity-0');
+                                 const contentDiv = successOverlay.querySelector('div');
+                                 if(contentDiv) {
+                                     contentDiv.classList.remove('scale-95');
+                                     contentDiv.classList.add('scale-100');
+                                 }
+                             });
+                         }
+                         
+                         // Wait 2 seconds then redirect
+                         setTimeout(() => {
+                             localStorage.setItem('skipLogin', 'true');
+                             window.location.href = 'index.html';
+                         }, 2000);
+                    });
+                }
+             </script>
+
+            <!-- Terms and Conditions -->
+            <section class="bg-white rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400">description</span>
+                        Terms of Service
+                    </h2>
+                    <span class="text-xs font-semibold text-primary-green bg-primary-green/10 px-2 py-1 rounded">Last updated: Jan 2026</span>
+                </div>
+                <div class="p-8 text-sm text-text-secondary leading-relaxed space-y-5 h-80 overflow-y-auto no-scrollbar">
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">1. Introduction</h4>
+                        <p>Welcome to MySub. By using our website and services, you agree to comply with and be bound by the following terms and conditions.</p>
+                    </div>
+                    <div class="space-y-1">
+                         <h4 class="font-bold text-text-main">2. Services</h4>
+                         <p>MySub provides subscription management and analytics tools. We do not directly control third-party subscription services but offer tools to help you manage them.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">3. User Responsibilities</h4>
+                        <p>You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">4. Intellectual Property</h4>
+                        <p>The content, organization, graphics, design, compilation, and other matters related to the Site are protected under applicable copyrights and trademarks.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">5. Limitation of Liability</h4>
+                        <p>MySub shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use our services.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">6. Updates to Terms</h4>
+                        <p>We reserve the right to change these terms at any time. Your continued use of the site constitutes acceptance of the new terms.</p>
+                    </div>
+                     <div class="space-y-1">
+                        <h4 class="font-bold text-text-main">7. Governing Law</h4>
+                        <p>These terms are governed by the laws of the jurisdiction in which MySub operates.</p>
+                     </div>
+                </div>
+                <div class="p-4 bg-gray-50 flex justify-end">
+                    <button class="flex items-center gap-2 text-text-main font-bold text-sm hover:bg-white px-4 py-2 rounded-lg transition-colors border border-transparent hover:border-gray-200">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Download PDF
+                    </button>
+                </div>
+            </section>
+
+            <!-- Privacy Policy -->
+             <section class="bg-white rounded-2xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden mb-12">
+                <div class="p-6 border-b border-gray-50">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400">security</span>
+                        Privacy Policy & Data Usage
+                    </h2>
+                </div>
+                <div class="p-8 text-sm text-text-secondary leading-relaxed space-y-4">
+                    <p>At MySub, we take your privacy seriously. This policy describes how we collect, use, and handle your personal information.</p>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                            <span>We encrypt all financial data using <strong class="text-text-main">bank-grade 256-bit encryption</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                            <span>We strictly <strong class="text-text-main">do not sell your personal data</strong> to third parties.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                            <span>We use <strong class="text-text-main">anonymized aggregation</strong> for analytics features.</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+             <!-- Footer Info -->
+            <footer class="text-center text-xs text-gray-400 pb-8">
+                <p>&copy; 2026 MySub Inc. All rights reserved.</p>
+                <div class="flex justify-center gap-6 mt-3 font-medium">
+                    <a href="#" class="hover:text-text-main transition-colors">Contact Support</a>
+                    <a href="#" class="hover:text-text-main transition-colors">API Documentation</a>
+                    <a href="#" class="hover:text-text-main transition-colors">Status</a>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="success-overlay" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center justify-center gap-6 transform scale-95 transition-transform duration-300 w-[400px] h-[300px]">
+            <div class="w-20 h-20 rounded-full bg-primary-green/10 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-4xl text-primary-green filled">check_circle</span>
+            </div>
+            <div class="text-center">
+                <h3 class="text-2xl font-bold text-text-main">Submission Completed!</h3>
+            </div>
+            <img id="overlay-bank-logo" src="" alt="Bank Logo" class="h-8 object-contain opacity-80 mt-2 shrink-0">
+        </div>
+    </div>
+
+</body>
+</html>
