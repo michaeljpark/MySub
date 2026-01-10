@@ -163,18 +163,23 @@
         if (tabName === 'dashboard') {
             switchDesktopView('desktop-view-dashboard');
             setActiveNav(0);
+            updateDesktopNavStyles(desktopNavDashboard, desktopNavAnalytics, desktopNavCredit);
         } else if (tabName === 'heatmap') {
             switchDesktopView('desktop-view-heatmap');
             setActiveNav(2);
+            updateDesktopNavStyles(desktopNavAnalytics, desktopNavDashboard, desktopNavCredit);
         } else if (tabName === 'credit') {
              switchDesktopView('desktop-view-credit');
              setActiveNav(1); 
+             updateDesktopNavStyles(desktopNavCredit, desktopNavDashboard, desktopNavAnalytics);
         } else if (tabName === 'discounter') {
              switchDesktopView('desktop-view-discounter');
              setActiveNav(1);
+             updateDesktopNavStyles(desktopNavCredit, desktopNavDashboard, desktopNavAnalytics);
         } else if (tabName === 'profile') {
              switchDesktopView('desktop-view-dashboard');
              setActiveNav(3);
+             updateDesktopNavStyles(desktopNavDashboard, desktopNavAnalytics, desktopNavCredit);
         }
     }
 
@@ -564,6 +569,15 @@
              e.preventDefault();
              switchDesktopView('desktop-view-credit');
              updateDesktopNavStyles(desktopNavCredit, desktopNavDashboard, desktopNavAnalytics);
+        });
+    }
+
+    // View Report Button Logic
+    const btnViewReportDashboard = document.getElementById('btn-view-report-dashboard');
+    if (btnViewReportDashboard) {
+        btnViewReportDashboard.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('heatmap');
         });
     }
 
@@ -1627,6 +1641,251 @@
              e.stopPropagation();
              closeRecap(); 
              // Could trigger credit view or similar here
+        });
+    }
+
+    // --- Add New Subscription Modal Logic ---
+    const addNewModal = document.getElementById('add-new-modal');
+    const btnAddNew = document.getElementById('btn-add-new');
+    const btnCloseAddNew = document.getElementById('close-add-new-modal');
+    const btnFinishAddNew = document.getElementById('btn-finish-add-new');
+    
+    const step1 = document.getElementById('add-new-step-1');
+    const step2 = document.getElementById('add-new-step-2');
+    const step3 = document.getElementById('add-new-step-3');
+    
+    const chkHistory = document.getElementById('chk-consent-history');
+    const chkApi = document.getElementById('chk-consent-api');
+    const btnStartScan = document.getElementById('btn-start-scan');
+
+    function openAddNewModal() {
+        if (!addNewModal) return;
+        addNewModal.classList.remove('hidden');
+        addNewModal.classList.add('flex');
+        // Reset state
+        step1.classList.remove('hidden');
+        step2.classList.add('hidden');
+        step3.classList.add('hidden');
+        
+        // Reset checkboxes and button
+        if(chkHistory) chkHistory.checked = false;
+        if(chkApi) chkApi.checked = false;
+        if(btnStartScan) {
+            btnStartScan.disabled = true;
+            btnStartScan.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        requestAnimationFrame(() => {
+            addNewModal.classList.remove('opacity-0');
+            addNewModal.querySelector('div').classList.remove('scale-95');
+        });
+    }
+
+    function closeAddNewModal() {
+        if (!addNewModal) return;
+        addNewModal.classList.add('opacity-0');
+        addNewModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            addNewModal.classList.add('hidden');
+            addNewModal.classList.remove('flex');
+        }, 300);
+    }
+    
+    function checkConsent() {
+        if (chkHistory && chkApi && btnStartScan) {
+            const isAuthorized = chkHistory.checked && chkApi.checked;
+            btnStartScan.disabled = !isAuthorized;
+            if (isAuthorized) {
+                btnStartScan.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btnStartScan.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    }
+
+    if (btnAddNew) {
+        btnAddNew.addEventListener('click', openAddNewModal);
+    }
+    if (btnCloseAddNew) {
+        btnCloseAddNew.addEventListener('click', closeAddNewModal);
+    }
+    if (btnFinishAddNew) {
+        btnFinishAddNew.addEventListener('click', closeAddNewModal);
+    }
+    
+    // Checkbox Listeners
+    if (chkHistory) chkHistory.addEventListener('change', checkConsent);
+    if (chkApi) chkApi.addEventListener('change', checkConsent);
+
+    // Scan Logic
+    if (btnStartScan) {
+        btnStartScan.addEventListener('click', () => {
+            // Go to Step 2
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+            step2.classList.add('flex'); // Ensure flex display
+
+            // Simulate Scan
+            setTimeout(() => {
+                // Go to Step 3
+                step2.classList.add('hidden');
+                step2.classList.remove('flex');
+                
+                step3.classList.remove('hidden');
+                step3.classList.add('flex');
+            }, 2500); 
+        });
+    }
+
+    // --- Spending Breakdown Modal Logic ---
+    const spendingModal = document.getElementById('spending-modal');
+    
+    window.openSpendingModal = function() {
+        if (!spendingModal) return;
+        spendingModal.classList.remove('hidden');
+        spendingModal.classList.add('flex');
+        
+        requestAnimationFrame(() => {
+            spendingModal.classList.remove('opacity-0');
+            spendingModal.querySelector('div').classList.remove('scale-95');
+        });
+        
+        renderSpendingChart();
+    };
+
+    window.closeSpendingModal = function() {
+        if (!spendingModal) return;
+        spendingModal.classList.add('opacity-0');
+        spendingModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            spendingModal.classList.add('hidden');
+            spendingModal.classList.remove('flex');
+        }, 300);
+    };
+
+    function renderSpendingChart() {
+        const svg = document.getElementById('spending-pie-chart');
+        const detailsContainer = document.getElementById('spending-details');
+        const totalDisplay = document.getElementById('spending-total-amount');
+        if (!svg) return;
+
+        // 1. Gather Data
+        const subCards = document.querySelectorAll('.sub-card');
+        let items = [];
+        let total = 0;
+
+        subCards.forEach(card => {
+            const name = card.dataset.name;
+            const priceStr = card.dataset.price || '0';
+            const price = parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+            
+            if (name && price > 0) {
+                const exists = items.find(i => i.name === name);
+                if (!exists) {
+                    items.push({ name, price, priceStr });
+                    total += price;
+                }
+            }
+        });
+        
+        totalDisplay.textContent = 'C$ ' + total.toFixed(2);
+        items.sort((a, b) => b.price - a.price);
+
+        // 2. Get Bank Color (Primary)
+        // Create dummy to resolve CSS variable safely
+        const dummy = document.createElement('div');
+        dummy.className = 'text-primary';
+        dummy.style.display = 'none';
+        document.body.appendChild(dummy);
+        const computedColor = getComputedStyle(dummy).color; // returns "rgb(r, g, b)"
+        document.body.removeChild(dummy);
+
+        const rgbMatch = computedColor.match(/\d+/g);
+        const r = rgbMatch ? rgbMatch[0] : 0;
+        const g = rgbMatch ? rgbMatch[1] : 0;
+        const b = rgbMatch ? rgbMatch[2] : 0;
+
+        // 3. Render Ring Chart
+        svg.innerHTML = '';
+        const radius = 40;
+        const circumference = 2 * Math.PI * radius;
+        let cumulativePercent = 0;
+        
+        // Find max price for normalization (to make opacity relative to max item)
+        const maxPrice = items.length > 0 ? items[0].price : 1;
+
+        items.forEach((item, index) => {
+            if(item.price <= 0) return;
+            const percent = item.price / total;
+            
+            // Opacity: Higher percentage = Higher Opacity
+            // Min opacity 0.3, Max 1.0 based on comparison to the largest item
+            // const opacity = 0.3 + (0.7 * (item.price / maxPrice));
+            // User asked "opacity according to percentage".
+            // Let's make it distinct
+            const opacity = Math.max(0.2, item.price / maxPrice);
+            
+            // Create Circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('r', radius);
+            circle.setAttribute('cx', '50');
+            circle.setAttribute('cy', '50');
+            circle.setAttribute('fill', 'none');
+            
+            // Style
+            circle.setAttribute('stroke', `rgba(${r}, ${g}, ${b}, ${opacity})`);
+            circle.setAttribute('stroke-width', '8');
+            circle.setAttribute('stroke-linecap', 'round');
+            
+            // Calculate Dash Array (Visible length vs Gap)
+            // circumference * percent is the total arc length allocated.
+            // We need to subtract space for the rounded caps to avoid overlap or Just make space.
+            // stroke-linecap adds half-width (4px) on each end. Total added visual length = 8px.
+            // So we subtract ~10px from the dash length to create a small gap.
+            const allocatedLength = circumference * percent;
+            // Ensure minimum visual dot if small
+            const visibleLength = Math.max(0.1, allocatedLength - 12); 
+            
+            circle.setAttribute('stroke-dasharray', `${visibleLength} ${circumference - visibleLength}`);
+            
+            // Offset
+            // SVG dash pattern starts at 3 o'clock. We rotate -90deg in CSS, so 0 is Top.
+            // We need to offset negatively by the cumulative length.
+            // Adjust for the gap? It centers the stroke. The start of the stroke is shifted by cap-width?
+            // Actually, with round caps, the stroke starts at `dashoffset` but draws a cap backwards.
+            // To align perfectly, we might need to nudge. But simple cumulative is usually close enough visually for "Ring".
+            const offset = -1 * (cumulativePercent * circumference);
+            circle.setAttribute('stroke-dashoffset', offset);
+
+            // Update cumulative
+            cumulativePercent += percent;
+            
+            // Interactions
+            circle.classList.add('cursor-pointer', 'transition-all', 'duration-300', 'hover:stroke-width-[10]');
+
+            circle.addEventListener('click', (e) => {
+                // Highlight
+                Array.from(svg.children).forEach(p => {
+                    p.style.opacity = '0.3';
+                    p.classList.remove('hover:stroke-width-[10]');
+                });
+                circle.style.opacity = '1';
+                // Keep stroke width for selected
+                circle.classList.add('stroke-width-[10]');
+
+                // Display Details
+                const percentageStr = (percent * 100).toFixed(1) + '%';
+                detailsContainer.innerHTML = `
+                    <div class="animate-fade-up flex flex-col items-center">
+                         <div class="size-4 rounded-full mb-2" style="background-color: rgb(${r}, ${g}, ${b}, ${opacity})"></div>
+                        <h4 class="text-lg font-bold text-text-main dark:text-white mb-1">${item.name}</h4>
+                        <p class="text-2xl font-bold text-primary-green mb-1">${item.priceStr}</p>
+                        <p class="text-sm text-text-secondary">${percentageStr} of total</p>
+                    </div>
+                `;
+            });
+
+            svg.appendChild(circle);
         });
     }
 
