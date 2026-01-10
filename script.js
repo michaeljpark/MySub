@@ -481,24 +481,16 @@
     });
 
     navItems.forEach(item => {
-        // Handle both click and touchstart for better responsiveness on mobile
-        const handleInteraction = (e) => {
-            // e.preventDefault(); // Don't prevent default unless necessary, it might block scrolling or other native behaviors if not careful. 
-            // However, avoiding double firing is good.
-            const target = item.dataset.target;
-            switchTab(target);
-        };
+        // Optimize for touch devices (Safari/iOS)
+        item.style.touchAction = 'manipulation'; // Disables double-tap zoom delay
 
-        item.addEventListener('click', handleInteraction);
-        item.addEventListener('touchstart', (e) => {
-             // Basic Debounce or touch handling can go here if needed
-             // For simple Navigation, click usually suffices on modern mobile browsers.
-             // But if specific Safari issues arise (like 300ms delay or tap rejection), 'touchstart' helps.
-             // We won't prevent default on touchstart to allow scrolling if they drag, 
-             // but if it's a tap, 'click' will follow. 
-             // If we really want instant response without ghost clicks:
-             // e.preventDefault(); // This blocks scrolling if you mistap. Use carefully.
-        }, { passive: true });
+        item.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent standard behavior quirks
+            const target = item.dataset.target;
+            if (target) {
+                switchTab(target);
+            }
+        });
     });
 
     // --- Desktop Navigation ---
