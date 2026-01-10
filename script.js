@@ -181,17 +181,15 @@
     function resetNavStyles() {
         navItems.forEach(item => {
             const iconContainer = item.querySelector('.icon-container');
-            const icon = item.querySelector('svg');
+            const icon = item.querySelector('.material-symbols-outlined');
             const label = item.querySelector('.label');
 
             // Reset classes to inactive state (gray)
             iconContainer.classList.remove('bg-primary-green/10');
             iconContainer.classList.add('bg-transparent');
             
-            if (icon) {
-                icon.classList.remove('text-primary-green', 'filled');
-                icon.classList.add('text-gray-400');
-            }
+            icon.classList.remove('text-primary-green', 'filled');
+            icon.classList.add('text-gray-400');
             
             label.classList.remove('text-primary-green', 'font-bold');
             label.classList.add('text-gray-400', 'font-medium');
@@ -203,17 +201,15 @@
         const item = navItems[index];
 
         const iconContainer = item.querySelector('.icon-container');
-        const icon = item.querySelector('svg');
+        const icon = item.querySelector('.material-symbols-outlined');
         const label = item.querySelector('.label');
 
         // Set Active Styles
         iconContainer.classList.remove('bg-transparent');
         iconContainer.classList.add('bg-primary-green/10');
 
-        if (icon) {
-            icon.classList.remove('text-gray-400');
-            icon.classList.add('text-primary-green', 'filled');
-        }
+        icon.classList.remove('text-gray-400');
+        icon.classList.add('text-primary-green', 'filled');
 
         label.classList.remove('text-gray-400', 'font-medium');
         label.classList.add('text-primary-green', 'font-bold');
@@ -487,7 +483,7 @@
         // Active Style
         active.classList.add('bg-primary-green/10', 'text-primary-green');
         active.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-50', 'dark:hover:bg-white/5');
-        const iconA = active.querySelector('svg');
+        const iconA = active.querySelector('.material-symbols-outlined');
         if(iconA) iconA.classList.add('filled');
 
         // Inactive Styles
@@ -495,7 +491,7 @@
             if(!inactive) return;
             inactive.classList.remove('bg-primary-green/10', 'text-primary-green');
             inactive.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-50', 'dark:hover:bg-white/5');
-            const iconI = inactive.querySelector('svg');
+            const iconI = inactive.querySelector('.material-symbols-outlined');
             if(iconI) iconI.classList.remove('filled');
         });
     }
