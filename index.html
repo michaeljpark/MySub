@@ -72,7 +72,7 @@
 </head>
 
 <body
-    class="bg-background-off dark:bg-background-dark font-display text-text-main transition-colors duration-200 overflow-hidden h-full w-full fixed inset-0 overscroll-none">
+    class="bg-background-off dark:bg-background-dark font-display text-text-main transition-colors duration-200 h-full w-full">
 
     <!-- App Container (Root) -->
     <div class="relative w-full h-full min-h-screen bg-background-light dark:bg-background-dark overflow-hidden">
@@ -185,7 +185,7 @@
             <div id="desktop-layout"
                 class="flex flex-col md:flex-row h-full transition-colors duration-500" style="background-color: var(--sidebar-bg, #f3f4f6)">
                 <!-- Mobile Bottom Nav -->
-                <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-white/5 px-6 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-[100] md:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-white/5 px-6 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-[190] md:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                     <ul class="flex justify-around items-center max-w-md mx-auto">
                         <li class="nav-item group flex flex-col items-center gap-1 cursor-pointer transition-colors" data-target="dashboard">
                             <div class="icon-container p-1 rounded-xl bg-primary-green/10 text-primary-green">
@@ -274,9 +274,9 @@
                                     class="pl-10 pr-4 py-3 md:py-2 rounded-[100px] md:rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20">
                             </div>
                             <button
-                                class="flex items-center gap-2 px-4 py-2 bg-primary-green text-white rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
-                                <span class="material-symbols-outlined text-[20px]">add</span>
-                                Add <span class="hidden md:inline">New</span>
+                                class="flex items-center justify-center md:justify-start gap-0 md:gap-2 size-10 md:size-auto md:px-4 md:py-2 bg-primary-green text-white rounded-full md:rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-[24px] md:text-[20px]">add</span>
+                                <span class="hidden md:inline">Add New</span>
                             </button>
                         </div>
                     </header>

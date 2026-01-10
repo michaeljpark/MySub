@@ -482,10 +482,10 @@
 
     navItems.forEach(item => {
         // Optimize for touch devices (Safari/iOS)
+        item.style.cursor = 'pointer';
         item.style.touchAction = 'manipulation'; // Disables double-tap zoom delay
 
         item.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent standard behavior quirks
             const target = item.dataset.target;
             if (target) {
                 switchTab(target);
